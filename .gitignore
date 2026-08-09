@@ -35,3 +35,5 @@ lerna-debug.log*
 # Server temporary files
 uploads/
 temp/
+testsprite_tests/tmp/
+testsprite_tests/tmp/config.json

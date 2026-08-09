@@ -195,6 +195,29 @@ router.get('/timeline', async (req: Request, res: Response, next: NextFunction) 
   }
 });
 
+// Get experiences (both singular and plural aliases)
+const handleGetExperiences = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { data: experience } = await supabaseServer
+      .from('experiences')
+      .select('*')
+      .order('display_order', { ascending: true });
+
+    const store = getLocalStore();
+    const expCombined = mergeCollections(experience || [], store.experiences || []);
+    const formatted = expCombined.map((exp: any) => ({
+      ...exp,
+      title: exp.title || exp.role || 'Experience',
+      name: exp.name || exp.role || exp.company || 'Experience',
+    }));
+    res.json(formatted);
+  } catch (err) {
+    next(err);
+  }
+};
+router.get('/experience', handleGetExperiences);
+router.get('/experiences', handleGetExperiences);
+
 // Get certifications
 router.get('/certifications', async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -215,15 +238,25 @@ router.get('/certifications', async (req: Request, res: Response, next: NextFunc
 // Submit contact form
 router.post('/contact', async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { name, email, subject, message, profession } = req.body;
+    const { name, email, subject, message, profession } = req.body || {};
+
+    if (!name || !name.toString().trim() || !email || !email.toString().trim() || !message || !message.toString().trim()) {
+      return res.status(400).json({ error: 'Name, email, and message are required fields.' });
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email.toString().trim())) {
+      return res.status(400).json({ error: 'Please provide a valid email address.' });
+    }
+
     const formattedSubject = profession ? `[Role: ${profession}] ${subject || 'Portfolio Inquiry'}` : (subject || 'Portfolio Inquiry');
 
     const payload: any = {
       id: crypto.randomUUID(),
-      name: name || 'Anonymous Visitor',
-      email: email || 'no-email@provided.com',
+      name: name.toString().trim(),
+      email: email.toString().trim(),
       subject: formattedSubject,
-      message: message || '',
+      message: message.toString().trim(),
       profession: profession || '',
       read: false,
       replied: false,
@@ -899,7 +932,7 @@ router.delete('/admin/messages/:id', authenticateJWT, async (req: Request, res: 
 
 
 // --- File Upload Handler ---
-router.post('/admin/upload', authenticateJWT, upload.single('file'), (req: Request, res: Response) => {
+const handleFileUpload = (req: Request, res: Response) => {
   if (!req.file) {
     return res.status(400).json({ error: 'No file uploaded.' });
   }
@@ -907,8 +940,13 @@ router.post('/admin/upload', authenticateJWT, upload.single('file'), (req: Reque
   const protocol = req.protocol === 'https' || req.get('x-forwarded-proto') === 'https' ? 'https' : 'http';
   const baseUrl = process.env.BACKEND_URL || `${protocol}://${host}`;
   const fileUrl = `${baseUrl}/uploads/${req.file.filename}`;
-  res.json({ success: true, fileUrl });
-});
+  res.status(201).json({ success: true, fileUrl, url: fileUrl });
+};
+
+router.post('/upload', upload.single('file'), handleFileUpload);
+router.post('/uploads', upload.single('file'), handleFileUpload);
+router.post('/admin/upload', authenticateJWT, upload.single('file'), handleFileUpload);
+router.post('/admin/uploads', authenticateJWT, upload.single('file'), handleFileUpload);
 
 
 export default router;

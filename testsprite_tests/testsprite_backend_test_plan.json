@@ -1,0 +1,37 @@
+[
+  {
+    "id": "TC001",
+    "title": "getprojectspubliccontentretrieval",
+    "description": "Test GET /api/projects endpoint without authentication to verify it returns 200 status with a list of projects and that the response data correctly renders project cards with external links."
+  },
+  {
+    "id": "TC002",
+    "title": "getskillsandexperiencecontentdisplay",
+    "description": "Test GET /api/skills and GET /api/experience endpoints without authentication to ensure they return 200 status with categorized skills and timeline entries, and that the data displays correctly in the public UI."
+  },
+  {
+    "id": "TC003",
+    "title": "postcontactformsubmissionvalidation",
+    "description": "Test POST /api/contact endpoint with valid and invalid payloads to verify form validation, successful message persistence, email notification sending, and proper error handling when email service fails."
+  },
+  {
+    "id": "TC004",
+    "title": "postadminauthlogin",
+    "description": "Test POST /api/auth/login with valid and invalid admin credentials to confirm successful JWT token issuance on valid login and proper 401 unauthorized response on invalid login attempts."
+  },
+  {
+    "id": "TC005",
+    "title": "postadminprojectsmanagement",
+    "description": "Test POST, PUT, DELETE /api/admin/projects endpoints with valid JWT tokens to verify creation, updating, and deletion of projects, and confirm changes reflect in public GET /api/projects responses."
+  },
+  {
+    "id": "TC006",
+    "title": "getadmincontactmessagesmanagement",
+    "description": "Test GET and PATCH /api/admin/contact-messages endpoints with valid JWT tokens to ensure retrieval of contact inquiries and updating their status, and verify 401/403 responses when unauthorized."
+  },
+  {
+    "id": "TC007",
+    "title": "poststaticassetuploads",
+    "description": "Test POST /api/uploads endpoint with valid JWT and multipart file data to confirm successful file uploads and URL return, and test rejection of unsupported file types, oversized files, and unauthorized requests."
+  }
+]

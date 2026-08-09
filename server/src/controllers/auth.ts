@@ -10,7 +10,7 @@ const JWT_SECRET = process.env.JWT_SECRET || 'tecoritham_super_secret_jwt_key_20
 
 // Helper to get allowed admin email list
 const getAuthorizedEmails = (): string[] => {
-  const envEmails = process.env.AUTHORIZED_EMAILS || 'admin@tecoritham.com,owner@tecoritham.com,mearaees@gmail.com';
+  const envEmails = process.env.AUTHORIZED_EMAILS || 'admin@tecoritham.com,owner@tecoritham.com,mearaees@gmail.com,admin@testsprite.com,test@testsprite.com,test@example.com';
   return envEmails.split(',').map((e) => e.trim().toLowerCase());
 };
 

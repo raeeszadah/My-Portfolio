@@ -1,0 +1,811 @@
+[
+  {
+    "id": "TC001",
+    "title": "Submit a contact message successfully",
+    "description": "A visitor can submit the contact form with valid details and receive a confirmation that the inquiry was sent.",
+    "category": "Contact Form Submission and Inquiry Handling",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to the homepage"
+      },
+      {
+        "type": "action",
+        "description": "Scroll to the contact form"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the name field with a valid name"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the message field with a valid inquiry"
+      },
+      {
+        "type": "action",
+        "description": "Submit the contact form"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify a success confirmation is visible"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the submitted inquiry is reflected in the page state"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC002",
+    "title": "View the public portfolio sections",
+    "description": "A public visitor can open the homepage and see the core portfolio sections populated from public content.",
+    "category": "Portfolio Content Management in Admin CMS",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to the homepage"
+      },
+      {
+        "type": "action",
+        "description": "Scroll to the hero section"
+      },
+      {
+        "type": "action",
+        "description": "Scroll to the about section"
+      },
+      {
+        "type": "action",
+        "description": "Scroll to the skills section"
+      },
+      {
+        "type": "action",
+        "description": "Scroll to the projects section"
+      },
+      {
+        "type": "action",
+        "description": "Scroll to the experience section"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the core portfolio sections are displayed"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify public content is shown in those sections"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC003",
+    "title": "Browse the main portfolio sections",
+    "description": "A visitor can open the portfolio homepage and see the core Hero, About, Skills, Projects, and Experience content rendered from public data.",
+    "category": "Public Portfolio Landing Page",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to the homepage"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the Hero section is displayed"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the About, Skills, Projects, and Experience sections are displayed"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC004",
+    "title": "Submit a valid contact inquiry",
+    "description": "A visitor can send a contact message with valid details and receive a confirmation after submission.",
+    "category": "Portfolio Content Management in Admin CMS",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to the homepage"
+      },
+      {
+        "type": "action",
+        "description": "Scroll to the contact form"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the name field with Test Visitor"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with visitor@example.com"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the message field with a valid inquiry about services"
+      },
+      {
+        "type": "action",
+        "description": "Submit the contact form"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify a success confirmation is visible"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the contact form submission is acknowledged"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC005",
+    "title": "Log in as an admin and open the dashboard",
+    "description": "An admin can sign in successfully and reach the protected dashboard area.",
+    "category": "Admin Authentication and Protected Dashboard",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the admin username field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the protected dashboard is displayed"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify admin management controls are available"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC006",
+    "title": "Block access to admin tools without authentication",
+    "description": "A visitor cannot open protected admin content management pages without a valid session.",
+    "category": "Admin Authentication and Protected Dashboard",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to the admin dashboard"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify access is blocked"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify a login prompt is displayed"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC007",
+    "title": "Create a new project in the admin CMS",
+    "description": "An admin can add a project and see it appear in the public projects list.",
+    "category": "Portfolio Content Management in Admin CMS",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the admin username field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Open the projects management area"
+      },
+      {
+        "type": "action",
+        "description": "Create a new project with valid details"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the new project is saved in the admin list"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the new project appears in the public projects list"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC008",
+    "title": "View skills and experience content",
+    "description": "A visitor can browse categorized skills and the professional experience timeline on the public portfolio.",
+    "category": "Skills, Experience, Education, and Certifications Content Display",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to the homepage"
+      },
+      {
+        "type": "action",
+        "description": "Scroll to the skills and experience sections"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify categorized skills content is displayed"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the experience timeline is displayed"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC009",
+    "title": "Prevent contact submission with missing required details",
+    "description": "A visitor sees validation feedback when trying to submit the contact form without the required information.",
+    "category": "Portfolio Content Management in Admin CMS",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to the homepage"
+      },
+      {
+        "type": "action",
+        "description": "Scroll to the contact form"
+      },
+      {
+        "type": "action",
+        "description": "Submit the contact form without filling required fields"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify validation errors are visible"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the form is not submitted"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC010",
+    "title": "Upload a valid asset and reuse its URL in content",
+    "description": "This verifies that an admin can upload a supported static asset, receive a usable URL, and attach it to CMS content so the updated asset appears in the portfolio workflow.",
+    "category": "Static Asset Uploads for CMS",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to the admin login page"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the username field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Navigate to the static asset upload area"
+      },
+      {
+        "type": "action",
+        "description": "Upload a valid static asset file"
+      },
+      {
+        "type": "action",
+        "description": "Attach the uploaded asset URL to a CMS item"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the asset is shown as attached to the CMS content and the updated content is visible"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC011",
+    "title": "Block invalid contact form submissions",
+    "description": "A visitor sees validation feedback and cannot submit the contact form when required fields are missing or the email format is invalid.",
+    "category": "Contact Form Submission and Inquiry Handling",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to the homepage"
+      },
+      {
+        "type": "action",
+        "description": "Scroll to the contact form"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with an invalid email value"
+      },
+      {
+        "type": "action",
+        "description": "Submit the contact form"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify validation errors are visible"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the form submission is prevented"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC012",
+    "title": "Delete a project from the admin CMS",
+    "description": "An admin can remove a project and no longer see it in the public projects list.",
+    "category": "Portfolio Content Management in Admin CMS",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the admin username field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Open the projects management area"
+      },
+      {
+        "type": "action",
+        "description": "Delete an existing project"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the project is removed from the admin list"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the project no longer appears in the public projects list"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC013",
+    "title": "Open a project and reach its external destination",
+    "description": "A visitor can open a project card from the public projects list and follow its external link or repository link successfully.",
+    "category": "Public Portfolio Landing Page",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to the homepage"
+      },
+      {
+        "type": "action",
+        "description": "Scroll to the projects section"
+      },
+      {
+        "type": "action",
+        "description": "Open a project card"
+      },
+      {
+        "type": "action",
+        "description": "Click the project external link"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the project destination is displayed"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the project details remain accessible before leaving the portfolio"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC014",
+    "title": "Update an existing project in the admin CMS",
+    "description": "An admin can edit a project and see the saved changes reflected in the dashboard list.",
+    "category": "Portfolio Content Management in Admin CMS",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the admin username field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Open the projects management area"
+      },
+      {
+        "type": "action",
+        "description": "Edit an existing project's details"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the updated project is saved"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the project list shows the updated content"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC015",
+    "title": "Review and update contact inquiry status",
+    "description": "An admin can open contact inquiries and mark a message as read or resolved.",
+    "category": "Contact Inquiry Management in Admin CMS",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the admin username field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Open the contact inquiries area"
+      },
+      {
+        "type": "action",
+        "description": "Change an inquiry status to read or resolved"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the inquiry list is displayed"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the updated inquiry status is shown"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC016",
+    "title": "Browse education and certifications details",
+    "description": "A visitor can view education and certification information from the public experience area, including verification links when present.",
+    "category": "Skills, Experience, Education, and Certifications Content Display",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to the homepage"
+      },
+      {
+        "type": "action",
+        "description": "Scroll to the experience section"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify education details are displayed"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify certification details and verification links are displayed"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC017",
+    "title": "Handle invalid admin credentials",
+    "description": "An admin sees an authentication error when signing in with invalid credentials.",
+    "category": "Admin Authentication and Protected Dashboard",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the admin username field with invalid-user"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with invalid-password"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify an authentication error is visible"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify access to the dashboard is denied"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC018",
+    "title": "Apply theme changes on the public homepage",
+    "description": "This verifies that a visitor can toggle between available themes and immediately see the new appearance on the portfolio site.",
+    "category": "Theme Switching and UI Preferences",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to the public portfolio homepage"
+      },
+      {
+        "type": "action",
+        "description": "Toggle the theme preference"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the selected theme is applied"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the homepage remains usable after the theme change"
+      }
+    ],
+    "priority": "Medium"
+  },
+  {
+    "id": "TC019",
+    "title": "Switch theme and keep it after reloading",
+    "description": "This verifies that a visitor can change the site theme and the selected preference remains active after a page reload while public content loads.",
+    "category": "Theme Switching and UI Preferences",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to the public portfolio homepage"
+      },
+      {
+        "type": "action",
+        "description": "Toggle the theme preference"
+      },
+      {
+        "type": "action",
+        "description": "Reload the page"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the selected theme remains applied after reload"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify public portfolio content is still displayed"
+      }
+    ],
+    "priority": "Medium"
+  },
+  {
+    "id": "TC020",
+    "title": "Reject an unsupported asset type during upload",
+    "description": "This verifies that uploading an invalid file type is blocked and the asset cannot be saved for CMS use.",
+    "category": "Static Asset Uploads for CMS",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to the admin login page"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the username field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Navigate to the static asset upload area"
+      },
+      {
+        "type": "action",
+        "description": "Upload an unsupported file type"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify an upload validation error is visible"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the asset is not attached to any CMS content"
+      }
+    ],
+    "priority": "Low"
+  },
+  {
+    "id": "TC021",
+    "title": "Reject an oversized asset during upload",
+    "description": "This verifies that uploading a file over the allowed size limit is blocked and no reusable asset URL is created.",
+    "category": "Static Asset Uploads for CMS",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to the admin login page"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the username field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Navigate to the static asset upload area"
+      },
+      {
+        "type": "action",
+        "description": "Upload an oversized asset file"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify an upload validation error is visible"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify no uploaded asset URL is available for use"
+      }
+    ],
+    "priority": "Low"
+  },
+  {
+    "id": "TC022",
+    "title": "Show a fallback when projects cannot render",
+    "description": "If the public projects data cannot be rendered, the page still shows a fallback state and the rest of the portfolio remains usable.",
+    "category": "Public Portfolio Landing Page",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to the homepage"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the page renders a fallback state for the projects section"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the other main portfolio sections are still displayed"
+      }
+    ],
+    "priority": "Low"
+  },
+  {
+    "id": "TC023",
+    "title": "Require login before uploading an asset",
+    "description": "This verifies that upload access is protected and unauthenticated visitors are prompted to log in instead of uploading files.",
+    "category": "Static Asset Uploads for CMS",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to the static asset upload area"
+      },
+      {
+        "type": "action",
+        "description": "Attempt to upload a valid static asset file"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify access is blocked for unauthenticated users"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify a login prompt or protected access state is visible"
+      }
+    ],
+    "priority": "Low"
+  },
+  {
+    "id": "TC024",
+    "title": "Show an error state for skills data issues",
+    "description": "When skills content cannot be rendered correctly, the skills section shows an error state instead of a broken layout.",
+    "category": "Skills, Experience, Education, and Certifications Content Display",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to the homepage"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify an error state is displayed for the skills section"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the rest of the page still renders"
+      }
+    ],
+    "priority": "Low"
+  },
+  {
+    "id": "TC025",
+    "title": "Preserve theme while content falls back gracefully",
+    "description": "This verifies that changing theme still works when public content cannot be rendered normally and the UI keeps the chosen theme state.",
+    "category": "Theme Switching and UI Preferences",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to the public portfolio homepage"
+      },
+      {
+        "type": "action",
+        "description": "Toggle the theme preference"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the selected theme is applied"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify a public content error fallback is visible without losing the theme state"
+      }
+    ],
+    "priority": "Low"
+  }
+]
