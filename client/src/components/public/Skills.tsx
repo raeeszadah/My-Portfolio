@@ -9,6 +9,11 @@ interface SkillsProps {
 function getSkillLogoUrl(name: string, colorHex: string = 'fff') {
   const n = name.toLowerCase().trim();
 
+  // Unsupported Simple Icons (Bypass CDN fetch to prevent 404 & use Lucide fallbacks directly)
+  if (/inngest|clerk|convex|remotion/.test(n)) {
+    return '';
+  }
+
   // ── simpleicons.org slug map with strict precedence ──────────────────────
   const siMap: [RegExp, string][] = [
     // 1. Frameworks & Libraries (Must evaluate BEFORE generic JavaScript)
@@ -20,7 +25,6 @@ function getSkillLogoUrl(name: string, colorHex: string = 'fff') {
     [/typescript|\bts\b/,                     'typescript'],
     [/tailwind/,                              'tailwindcss'],
     [/framer|motion/,                         'framer'],
-    [/remotion/,                              'remotion'],
     [/socket/,                                'socketdotio'],
     [/graphql/,                               'graphql'],
 
@@ -28,6 +32,7 @@ function getSkillLogoUrl(name: string, colorHex: string = 'fff') {
     [/javascript|\bvanilla js\b|\bjs\b/,     'javascript'],
     [/python/,                                'python'],
     [/c\+\+/,                                 'cplusplus'],
+    [/java\b|openjdk/,                        'openjdk'],
     [/html/,                                  'html5'],
     [/css/,                                   'css3'],
 
@@ -39,18 +44,15 @@ function getSkillLogoUrl(name: string, colorHex: string = 'fff') {
     [/supabase/,                              'supabase'],
     [/firebase/,                              'firebase'],
     [/prisma/,                                'prisma'],
-    [/convex/,                                'convex'],
 
     // 4. Cloud, DevOps & Source Control
-    [/aws|amazon web/,                        'amazonwebservices'],
+    [/aws|amazon web/,                        'amazonaws'],
     [/docker/,                                'docker'],
     [/vercel/,                                'vercel'],
     [/github/,                                'github'],
     [/git(?!hub)/,                            'git'],
 
     // 5. Tools, Auth & AI
-    [/clerk/,                                 'clerk'],
-    [/inngest/,                               'inngest'],
     [/figma/,                                 'figma'],
     [/postman|rest api/,                      'postman'],
     [/jwt|json web/,                          'jsonwebtokens'],

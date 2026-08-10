@@ -1,4 +1,6 @@
+import { useState } from 'react';
 import { motion } from 'motion/react';
+import { Code } from 'lucide-react';
 
 interface TechCapsuleProps {
   name: string;
@@ -6,6 +8,8 @@ interface TechCapsuleProps {
 }
 
 function TechCapsule({ name, logo }: TechCapsuleProps) {
+  const [error, setError] = useState(false);
+
   return (
     <motion.div
       whileHover={{ scale: 1.05 }}
@@ -13,7 +17,16 @@ function TechCapsule({ name, logo }: TechCapsuleProps) {
       className="group flex items-center gap-3.5 p-2 pr-6 rounded-full bg-surface-card border border-border-subtle hover:border-brand-crimson hover:border-dashed cursor-pointer transition-all duration-300 shadow-[0_4px_12px_rgba(0,0,0,0.2)]"
     >
       <div className="size-11 rounded-full flex items-center justify-center bg-surface-overlay border border-border-subtle group-hover:border-brand-crimson transition-colors shrink-0">
-        <img className="size-5 object-contain" src={logo} alt={name} />
+        {!error && logo ? (
+          <img
+            className="size-5 object-contain"
+            src={logo}
+            alt={name}
+            onError={() => setError(true)}
+          />
+        ) : (
+          <Code className="size-5 text-brand-crimson" />
+        )}
       </div>
       <span className="text-xs font-bold text-white uppercase font-mono tracking-wider transition-colors group-hover:text-brand-crimson">
         {name}
@@ -36,11 +49,11 @@ export default function Marquee() {
 
   const row2Techs = [
     { name: 'Docker', logo: 'https://cdn.simpleicons.org/docker' },
-    { name: 'AWS Cloud', logo: 'https://cdn.simpleicons.org/amazonwebservices' },
+    { name: 'AWS Cloud', logo: 'https://cdn.simpleicons.org/amazonaws' },
     { name: 'GraphQL', logo: 'https://cdn.simpleicons.org/graphql' },
     { name: 'Python', logo: 'https://cdn.simpleicons.org/python' },
     { name: 'PostgreSQL', logo: 'https://cdn.simpleicons.org/postgresql' },
-    { name: 'Framer Motion', logo: 'https://cdn.simpleicons.org/framermotion' },
+    { name: 'Framer Motion', logo: 'https://cdn.simpleicons.org/framer' },
     { name: 'Git & GitHub', logo: 'https://cdn.simpleicons.org/git' },
     { name: 'Vite', logo: 'https://cdn.simpleicons.org/vite' },
   ];

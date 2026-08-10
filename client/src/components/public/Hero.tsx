@@ -77,8 +77,8 @@ export default function Hero({ profile }: HeroProps) {
     "figma",
     "tailwindcss",
     "greensock",
-    "framermotion",
-    "amazonwebservices",
+    "framer",
+    "amazonaws",
     "vite",
     "python",
     "cplusplus",
@@ -86,7 +86,7 @@ export default function Hero({ profile }: HeroProps) {
     "html5",
     "css3",
     "android",
-    "java",
+    "openjdk",
     "flutter"
   ];
 

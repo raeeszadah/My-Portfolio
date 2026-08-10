@@ -47,13 +47,6 @@ function Home() {
     });
 
 
-    function raf(time: number) {
-      lenis.raf(time);
-      requestAnimationFrame(raf);
-    }
-
-    const rafId = requestAnimationFrame(raf);
-
     lenis.on('scroll', ScrollTrigger.update);
 
     const tickerCb = (time: number) => {
@@ -64,7 +57,6 @@ function Home() {
     gsap.ticker.lagSmoothing(0);
 
     return () => {
-      cancelAnimationFrame(rafId);
       gsap.ticker.remove(tickerCb);
       lenis.destroy();
     };

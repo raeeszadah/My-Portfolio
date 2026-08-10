@@ -66,7 +66,9 @@ export function IconCloud({ iconSlugs }: DynamicCloudProps) {
   const theme = themeState?.theme || "dark"
 
   useEffect(() => {
-    fetchSimpleIcons({ slugs: iconSlugs }).then(setData)
+    fetchSimpleIcons({ slugs: iconSlugs })
+      .then(setData)
+      .catch((err) => console.warn("IconCloud fetch warning:", err));
   }, [iconSlugs])
 
   const renderedIcons = useMemo(() => {
