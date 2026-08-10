@@ -32,19 +32,28 @@ app.use(
 const allowedOrigins = [
   process.env.FRONTEND_URL,
   process.env.CLIENT_ORIGIN,
+  'https://my-portfolio-client-nine.vercel.app',
   'http://localhost:5173',
   'http://127.0.0.1:5173',
   'http://localhost:3000',
-].filter(Boolean) as string[];
+]
+  .filter(Boolean)
+  .map((o) => (o as string).trim().replace(/\/$/, '')) as string[];
 
 app.use(
   cors({
     origin: (origin, callback) => {
       // Allow requests with no origin (e.g. mobile apps, curl, server-to-server) or listed origins
-      if (!origin || allowedOrigins.includes(origin) || allowedOrigins.some((o) => origin.startsWith(o))) {
+      if (!origin) return callback(null, true);
+      const normalizedOrigin = origin.trim().replace(/\/$/, '');
+      const isAllowed = allowedOrigins.some(
+        (o) => normalizedOrigin === o || normalizedOrigin.startsWith(o)
+      );
+
+      if (isAllowed) {
         callback(null, true);
       } else {
-        callback(new Error(`CORS Policy Rejection: Origin ${origin} not permitted.`));
+        callback(null, false);
       }
     },
     credentials: true,

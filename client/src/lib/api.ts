@@ -1,4 +1,5 @@
-export const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+const rawApiUrl = (import.meta.env.VITE_API_URL || 'http://localhost:5000/api').trim().replace(/\/$/, '');
+export const API_BASE_URL = rawApiUrl.endsWith('/api') ? rawApiUrl : `${rawApiUrl}/api`;
 
 /**
  * Custom fetch wrapper that prefixes requests with API_BASE_URL and
@@ -35,7 +36,7 @@ export function getMediaUrl(url: string | undefined | null): string {
   const trimmed = url.trim();
   if (!trimmed) return '';
 
-  const backendBase = (import.meta.env.VITE_API_URL || 'http://localhost:5000/api').replace(/\/api\/?$/, '');
+  const backendBase = API_BASE_URL.replace(/\/api\/?$/, '');
 
   if (trimmed.startsWith('/uploads/')) {
     return `${backendBase}${trimmed}`;
