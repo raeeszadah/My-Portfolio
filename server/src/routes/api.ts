@@ -116,6 +116,38 @@ const formatProfile = (data: any) => {
   };
 };
 
+// Helper to reliably query the latest profile record from Supabase ordered by updated_at / created_at descending
+async function getLatestProfileFromSupabase() {
+  try {
+    let { data, error } = await supabaseServer
+      .from('profiles')
+      .select('*')
+      .order('updated_at', { ascending: false })
+      .limit(1)
+      .maybeSingle();
+
+    if (error || !data) {
+      const fallback = await supabaseServer
+        .from('profiles')
+        .select('*')
+        .order('created_at', { ascending: false })
+        .limit(1)
+        .maybeSingle();
+      data = fallback.data;
+    }
+
+    if (!data) {
+      const unordered = await supabaseServer.from('profiles').select('*').limit(1).maybeSingle();
+      data = unordered.data;
+    }
+
+    return data;
+  } catch (e) {
+    console.error('Error fetching latest profile from Supabase:', e);
+    return null;
+  }
+}
+
 // ==========================================
 // 1. PUBLIC PORTFOLIO ENDPOINTS
 // ==========================================
@@ -123,7 +155,7 @@ const formatProfile = (data: any) => {
 // Get profile and social links
 router.get('/profile', async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { data: rawProfile } = await supabaseServer.from('profiles').select('*').limit(1).maybeSingle();
+    const rawProfile = await getLatestProfileFromSupabase();
     let { data: dbSocials } = await supabaseServer
       .from('social_links')
       .select('*')
@@ -321,8 +353,8 @@ router.put('/admin/profile', authenticateJWT, async (req: Request, res: Response
       updated_at: new Date().toISOString(),
     };
 
-    const { data: existingList } = await supabaseServer.from('profiles').select('id').limit(1);
-    const existingId = existingList && existingList.length > 0 ? existingList[0].id : null;
+    const existingRecord = await getLatestProfileFromSupabase();
+    const existingId = existingRecord?.id || null;
 
     if (existingId) {
       let { error } = await supabaseServer.from('profiles').update(payload).eq('id', existingId);
@@ -347,7 +379,7 @@ router.put('/admin/profile', authenticateJWT, async (req: Request, res: Response
     localCMS.profile = { ...(localCMS.profile || {}), ...payload };
     saveLocalStore();
 
-    const { data: latestProfile } = await supabaseServer.from('profiles').select('*').limit(1).maybeSingle();
+    const latestProfile = await getLatestProfileFromSupabase();
     const finalResult = { ...(latestProfile || {}), ...payload };
     res.json(formatProfile(finalResult));
   } catch (err: any) {

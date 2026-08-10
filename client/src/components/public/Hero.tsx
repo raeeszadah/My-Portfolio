@@ -141,9 +141,9 @@ export default function Hero({ profile }: HeroProps) {
               SEE WORK
             </Button>
 
-            {profile?.resumeUrl && (
+            {(profile?.resumeUrl || profile?.resume_url) && (
               <a
-                href={getMediaUrl(profile.resumeUrl)}
+                href={getMediaUrl(profile.resumeUrl || profile.resume_url)}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 border border-brand-crimson/50 text-brand-crimson hover:text-white hover:bg-brand-crimson hover:border-brand-crimson px-7 py-3.5 rounded-full font-semibold text-xs tracking-wider transition-all duration-300 shadow-[0_0_15px_rgba(255,0,27,0.2)]"
@@ -165,7 +165,7 @@ export default function Hero({ profile }: HeroProps) {
             {/* Photo Container */}
             <div className="relative w-[280px] h-[280px] md:w-[360px] md:h-[360px] rounded-full overflow-hidden bg-surface-card border-2 border-border-subtle/60 flex items-center justify-center shadow-[0_0_40px_rgba(255,0,27,0.25)]">
               <img
-                src={getMediaUrl(profile?.profileImage) || '/profile.png'}
+                src={getMediaUrl(profile?.profileImage || profile?.profile_image) || '/profile.png'}
                 alt={profile?.name || 'Developer Avatar'}
                 className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-700 ease-out"
               />
