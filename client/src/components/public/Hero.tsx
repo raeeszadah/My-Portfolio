@@ -62,32 +62,31 @@ export default function Hero({ profile }: HeroProps) {
     }
   };
 
-  const slugs = [
-    "typescript",
-    "javascript",
-    "react",
-    "nodedotjs",
-    "express",
-    "nextdotjs",
-    "postgresql",
-    "mongodb",
-    "docker",
-    "git",
-    "github",
-    "figma",
-    "tailwindcss",
-    "greensock",
-    "framer",
-    "amazonaws",
-    "vite",
-    "python",
-    "cplusplus",
-    "graphql",
-    "html5",
-    "css3",
-    "android",
-    "openjdk",
-    "flutter"
+  const techNames = [
+    "TypeScript",
+    "JavaScript",
+    "React",
+    "Node.js",
+    "Express",
+    "Next.js",
+    "PostgreSQL",
+    "MongoDB",
+    "Docker",
+    "Git",
+    "Figma",
+    "Tailwind CSS",
+    "GSAP",
+    "Framer Motion",
+    "AWS Cloud",
+    "Vite",
+    "Python",
+    "C++",
+    "GraphQL",
+    "HTML5",
+    "CSS3",
+    "Android",
+    "Java",
+    "OpenAI"
   ];
 
   return (
@@ -101,8 +100,8 @@ export default function Hero({ profile }: HeroProps) {
 
       {/* 3D Background Icon Cloud (85% Opacity, Background Stack) */}
       <div className="absolute inset-0 flex items-center justify-center opacity-85 z-0 pointer-events-none">
-        <div className="w-full max-w-2xl translate-x-[15%] translate-y-[-5%] opacity-85">
-          <IconCloud iconSlugs={slugs} />
+        <div className="w-full max-w-2xl translate-x-[15%] translate-y-[-5%] opacity-85 flex items-center justify-center">
+          <IconCloud iconNames={techNames} />
         </div>
       </div>
 

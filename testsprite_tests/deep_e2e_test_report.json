@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-08-11 00:19:24",
+  "timestamp": "2026-08-11 00:29:27",
   "total": 31,
   "passed": 31,
   "failed": 0,
@@ -21,7 +21,7 @@
       "name": "GET /api/profile (Frontend Persistence Check)",
       "category": "Profile Flow",
       "status": "PASS",
-      "detail": "Reflected Bio: E2E Test Bio Updated at 1786387758"
+      "detail": "Reflected Bio: E2E Test Bio Updated at 1786388361"
     },
     {
       "name": "Restore Original Profile State",
@@ -33,7 +33,7 @@
       "name": "POST /api/upload (PDF Resume Upload)",
       "category": "Resume Flow",
       "status": "PASS",
-      "detail": "PDF URL: http://localhost:5000/uploads/file-1786387761195-297651296.pdf"
+      "detail": "PDF URL: http://localhost:5000/uploads/file-1786388363389-706908681.pdf"
     },
     {
       "name": "GET /uploads/sample_resume.pdf (Download Check)",
@@ -45,7 +45,7 @@
       "name": "POST /api/admin/socials (Create)",
       "category": "Socials Flow",
       "status": "PASS",
-      "detail": "Created ID: de887e0e-a553-4b54-b169-998093395670"
+      "detail": "Created ID: 602651fe-aca5-499f-b2d7-b9b4c761941b"
     },
     {
       "name": "GET /api/socials (Reflection Assert)",
@@ -54,7 +54,7 @@
       "detail": "Social Item Reflected: True"
     },
     {
-      "name": "DELETE /api/admin/socials/de887e0e-a553-4b54-b169-998093395670",
+      "name": "DELETE /api/admin/socials/602651fe-aca5-499f-b2d7-b9b4c761941b",
       "category": "Socials Flow",
       "status": "PASS",
       "detail": "Cleaned up test social item"
@@ -63,7 +63,7 @@
       "name": "POST /api/admin/skills (Create Skill)",
       "category": "Skills Flow",
       "status": "PASS",
-      "detail": "Skill ID: 4ad75eaf-75c7-49fa-a871-655611bc26d0"
+      "detail": "Skill ID: f76f75fb-9b9c-443f-9b71-73ae6640a585"
     },
     {
       "name": "GET /api/skills (Reflection Assert)",
@@ -72,7 +72,7 @@
       "detail": "Skill Reflected: True"
     },
     {
-      "name": "DELETE /api/admin/skills/4ad75eaf-75c7-49fa-a871-655611bc26d0",
+      "name": "DELETE /api/admin/skills/f76f75fb-9b9c-443f-9b71-73ae6640a585",
       "category": "Skills Flow",
       "status": "PASS",
       "detail": "Cleaned up test skill"
@@ -81,13 +81,13 @@
       "name": "POST /api/admin/experience (Create)",
       "category": "Timeline Flow",
       "status": "PASS",
-      "detail": "Exp ID: a66f9343-55be-4629-8cd5-269623b643e9"
+      "detail": "Exp ID: 69f27cb4-b787-4d17-bdc3-5d7b065dc17d"
     },
     {
       "name": "POST /api/admin/education (Create)",
       "category": "Timeline Flow",
       "status": "PASS",
-      "detail": "Edu ID: 5f11437b-b9f8-429a-a86a-b3ddf1210c83"
+      "detail": "Edu ID: 4e1f0b61-499a-4661-94d5-3045d2fc1ff0"
     },
     {
       "name": "GET /api/timeline (Experience Reflection Assert)",
@@ -105,16 +105,16 @@
       "name": "POST /api/admin/certifications (Create)",
       "category": "Certifications Flow",
       "status": "PASS",
-      "detail": "Cert ID: 94578965-22f9-4603-bc4f-6f670be4188a"
+      "detail": "Cert ID: 8760e905-71f2-465f-adde-496e7dbb739f"
     },
     {
-      "name": "PUT /api/admin/certifications/94578965-22f9-4603-bc4f-6f670be4188a (Edit)",
+      "name": "PUT /api/admin/certifications/8760e905-71f2-465f-adde-496e7dbb739f (Edit)",
       "category": "Certifications Flow",
       "status": "PASS",
       "detail": "Updated title"
     },
     {
-      "name": "DELETE /api/admin/certifications/94578965-22f9-4603-bc4f-6f670be4188a (Cleanup)",
+      "name": "DELETE /api/admin/certifications/8760e905-71f2-465f-adde-496e7dbb739f (Cleanup)",
       "category": "Certifications Flow",
       "status": "PASS",
       "detail": "Cleaned up test cert"
@@ -123,7 +123,7 @@
       "name": "POST /api/admin/projects (Create Project)",
       "category": "Project Flow",
       "status": "PASS",
-      "detail": "Project ID: ce7af8f6-ea02-4bfe-b997-d6bc05bd59f7"
+      "detail": "Project ID: 972a4f41-a4aa-426b-b87a-0e37305499cb"
     },
     {
       "name": "GET /api/projects (Reflection Assert)",
@@ -132,13 +132,13 @@
       "detail": "Project Reflected: True"
     },
     {
-      "name": "PUT /api/admin/projects/ce7af8f6-ea02-4bfe-b997-d6bc05bd59f7 (Update)",
+      "name": "PUT /api/admin/projects/972a4f41-a4aa-426b-b87a-0e37305499cb (Update)",
       "category": "Project Flow",
       "status": "PASS",
       "detail": "Updated project details"
     },
     {
-      "name": "DELETE /api/admin/projects/ce7af8f6-ea02-4bfe-b997-d6bc05bd59f7 (Cleanup)",
+      "name": "DELETE /api/admin/projects/972a4f41-a4aa-426b-b87a-0e37305499cb (Cleanup)",
       "category": "Project Flow",
       "status": "PASS",
       "detail": "Cleaned up test project"
@@ -153,16 +153,16 @@
       "name": "GET /api/admin/messages (Inbox Retrieval)",
       "category": "Inbox E2E",
       "status": "PASS",
-      "detail": "Found submitted message ID: 074877d4-d3c9-4c0f-a41c-d34e6b4b97ea"
+      "detail": "Found submitted message ID: 20ffaba9-b1ed-4992-8a17-439cef3a7180"
     },
     {
-      "name": "PUT /api/admin/messages/074877d4-d3c9-4c0f-a41c-d34e6b4b97ea/read",
+      "name": "PUT /api/admin/messages/20ffaba9-b1ed-4992-8a17-439cef3a7180/read",
       "category": "Inbox E2E",
       "status": "PASS",
       "detail": "Marked message as read"
     },
     {
-      "name": "POST /api/admin/messages/074877d4-d3c9-4c0f-a41c-d34e6b4b97ea/reply",
+      "name": "POST /api/admin/messages/20ffaba9-b1ed-4992-8a17-439cef3a7180/reply",
       "category": "Inbox E2E",
       "status": "PASS",
       "detail": "Reply Sent & Saved: True"
@@ -174,7 +174,7 @@
       "detail": "Replied State: True, Replies Count: 1"
     },
     {
-      "name": "DELETE /api/admin/messages/074877d4-d3c9-4c0f-a41c-d34e6b4b97ea (Cleanup)",
+      "name": "DELETE /api/admin/messages/20ffaba9-b1ed-4992-8a17-439cef3a7180 (Cleanup)",
       "category": "Inbox E2E",
       "status": "PASS",
       "detail": "Deleted test message"

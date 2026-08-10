@@ -1,113 +1,9 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Code, Cpu, Terminal, Database, Server } from 'lucide-react';
+import { getTechIcon } from '../../lib/techIcons';
 
 interface SkillsProps {
   skills: any[];
-}
-
-function getSkillLogoUrl(name: string, colorHex: string = 'fff') {
-  const n = name.toLowerCase().trim();
-
-  // Unsupported Simple Icons (Bypass CDN fetch to prevent 404 & use Lucide fallbacks directly)
-  if (/inngest|clerk|convex|remotion/.test(n)) {
-    return '';
-  }
-
-  // ── simpleicons.org slug map with strict precedence ──────────────────────
-  const siMap: [RegExp, string][] = [
-    // 1. Frameworks & Libraries (Must evaluate BEFORE generic JavaScript)
-    [/node|\bnodedotjs\b/,                    'nodedotjs'],
-    [/express/,                               'express'],
-    [/gsap|greensock/,                        'greensock'],
-    [/next/,                                  'nextdotjs'],
-    [/react/,                                 'react'],
-    [/typescript|\bts\b/,                     'typescript'],
-    [/tailwind/,                              'tailwindcss'],
-    [/framer|motion/,                         'framer'],
-    [/socket/,                                'socketdotio'],
-    [/graphql/,                               'graphql'],
-
-    // 2. Pure Languages & Web Standards
-    [/javascript|\bvanilla js\b|\bjs\b/,     'javascript'],
-    [/python/,                                'python'],
-    [/c\+\+/,                                 'cplusplus'],
-    [/java\b|openjdk/,                        'openjdk'],
-    [/html/,                                  'html5'],
-    [/css/,                                   'css3'],
-
-    // 3. Databases & ORMs
-    [/mongodb/,                               'mongodb'],
-    [/postgresql|postgres/,                   'postgresql'],
-    [/mysql/,                                 'mysql'],
-    [/redis/,                                 'redis'],
-    [/supabase/,                              'supabase'],
-    [/firebase/,                              'firebase'],
-    [/prisma/,                                'prisma'],
-
-    // 4. Cloud, DevOps & Source Control
-    [/aws|amazon web/,                        'amazonaws'],
-    [/docker/,                                'docker'],
-    [/vercel/,                                'vercel'],
-    [/github/,                                'github'],
-    [/git(?!hub)/,                            'git'],
-
-    // 5. Tools, Auth & AI
-    [/figma/,                                 'figma'],
-    [/postman|rest api/,                      'postman'],
-    [/jwt|json web/,                          'jsonwebtokens'],
-    [/openai|prompt engineer|gen(erative)? ai/, 'openai'],
-    [/hugging|llm|rag/,                       'huggingface'],
-    [/razorpay/,                              'razorpay'],
-
-    // 6. System Architecture & Fundamentals
-    [/system design|scalable/,                'diagramsdotnet'],
-    [/dsa|data structure/,                    'cplusplus'],
-  ];
-
-  for (const [pattern, slug] of siMap) {
-    if (pattern.test(n)) {
-      return `https://cdn.simpleicons.org/${slug}/${colorHex}`;
-    }
-  }
-
-  return '';
-}
-
-
-// A smart icon component that loads simpleicon, but falls back to a nice Lucide icon if it fails or doesn't exist
-function SkillIcon({ name, logoUrl, className }: { name: string; logoUrl: string; className?: string }) {
-  const [error, setError] = useState(false);
-
-  useEffect(() => {
-    setError(false);
-  }, [logoUrl]);
-
-  if (error || !logoUrl) {
-    const n = name.toLowerCase();
-    if (n.includes('design') || n.includes('system')) {
-      return <Cpu className={className} />;
-    }
-    if (n.includes('db') || n.includes('mongo') || n.includes('sql') || n.includes('postgres') || n.includes('convex')) {
-      return <Database className={className} />;
-    }
-    if (n.includes('node') || n.includes('express') || n.includes('api') || n.includes('backend') || n.includes('inngest')) {
-      return <Server className={className} />;
-    }
-    if (n.includes('clerk') || n.includes('auth') || n.includes('jwt')) {
-      return <Terminal className={className} />;
-    }
-    return <Code className={className} />;
-  }
-
-  return (
-    <img
-      src={logoUrl}
-      alt={name}
-      className={className}
-      onError={() => setError(true)}
-    />
-  );
 }
 
 export default function Skills({ skills }: SkillsProps) {
@@ -159,11 +55,7 @@ export default function Skills({ skills }: SkillsProps) {
               transition={{ duration: 0.45, ease: [0.25, 1, 0.5, 1] as [number, number, number, number] }}
               className="w-24 h-24 md:w-28 md:h-28 flex items-center justify-center text-brand-crimson shrink-0"
             >
-              <SkillIcon
-                name={highlightedSkills[activeIdx].name}
-                logoUrl={getSkillLogoUrl(highlightedSkills[activeIdx].name, 'ff001b')}
-                className="w-full h-full object-contain text-brand-crimson"
-              />
+              {getTechIcon(highlightedSkills[activeIdx].name, "w-full h-full object-contain text-brand-crimson")}
             </motion.div>
           )}
         </AnimatePresence>
@@ -224,13 +116,11 @@ export default function Skills({ skills }: SkillsProps) {
                       transition={{ duration: 0.25 }}
                       className="flex items-center gap-2.5"
                     >
-                      <SkillIcon
-                        name={skill.name}
-                        logoUrl={getSkillLogoUrl(skill.name, isActive ? 'ff001b' : 'a0a0a0')}
-                        className={`w-5 h-5 object-contain transition-colors duration-300 ${
-                          isActive ? 'text-brand-crimson' : 'text-text-secondary group-hover:text-white'
-                        }`}
-                      />
+                      <div className={`w-5 h-5 flex items-center justify-center shrink-0 transition-colors duration-300 ${
+                        isActive ? 'text-brand-crimson' : 'text-text-secondary group-hover:text-white'
+                      }`}>
+                        {getTechIcon(skill.name, "w-5 h-5 object-contain")}
+                      </div>
                       <span className={`text-xs font-bold font-mono tracking-wider ${isActive ? 'text-white' : 'text-text-secondary'}`}>
                         {skill.name.split(' ')[0]}
                       </span>
