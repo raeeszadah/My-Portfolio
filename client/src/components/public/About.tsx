@@ -80,7 +80,7 @@ export default function About({ profile, timeline, certifications }: AboutProps)
 
           <p className="text-text-secondary text-base md:text-lg leading-relaxed font-body">
             {profile?.bio ||
-              'I am a passionate software developer focused on engineering premium interfaces, responsive layouts, and interactive visual designs. I bridge the gap between technical backend logic and detailed frontend representations.'}
+              'Final-year B.Tech student in Electronics & Computer Engineering at MIT-ADT University (Pune, India) and practising Full Stack & AI Software Engineer behind Tecoritham. Experienced in building AI-powered SaaS platforms, REST APIs, and responsive frontends using MERN Stack, Next.js, TypeScript, and Generative AI.'}
           </p>
           <p className="text-text-secondary text-base md:text-lg leading-relaxed font-body">
             I design systems that stand out. With every project, my focus remains on performance, clean coding standards, and high-fidelity micro-animations. I believe in stable visual environments where dynamic content feeds seamlessly without ever breaking the underlying design system.
