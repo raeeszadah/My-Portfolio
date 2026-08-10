@@ -101,7 +101,7 @@ export default function Testimonial2() {
   const row3 = testimonials.slice(6, 9);
 
   return (
-    <div className="relative w-full py-20 overflow-hidden [--color-primary:#FF001B] bg-black text-white">
+    <div className="relative w-full py-20 overflow-hidden [--color-primary:#FF001B] bg-background-alt text-white border-y border-border-subtle">
       {/* Eyebrow and Header */}
       <div className="max-w-7xl mx-auto px-6 text-center mb-12">
         <div className="flex items-center justify-center gap-2 mb-2">

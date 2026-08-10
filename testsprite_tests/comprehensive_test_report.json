@@ -1,0 +1,141 @@
+{
+  "timestamp": "2026-08-10 16:53:26",
+  "total": 22,
+  "passed": 22,
+  "failed": 0,
+  "pass_rate": "100.0%",
+  "results": [
+    {
+      "name": "GET /api/projects",
+      "category": "Public REST API",
+      "status": "PASS",
+      "detail": "Status: 200, Count: 6"
+    },
+    {
+      "name": "GET /api/skills",
+      "category": "Public REST API",
+      "status": "PASS",
+      "detail": "Status: 200, Count: 26"
+    },
+    {
+      "name": "GET /api/timeline",
+      "category": "Public REST API",
+      "status": "PASS",
+      "detail": "Status: 200"
+    },
+    {
+      "name": "GET /api/profile",
+      "category": "Public REST API",
+      "status": "PASS",
+      "detail": "Status: 200"
+    },
+    {
+      "name": "GET /api/socials",
+      "category": "Public REST API",
+      "status": "PASS",
+      "detail": "Status: 200"
+    },
+    {
+      "name": "POST /api/contact (Empty Payload)",
+      "category": "Contact Form",
+      "status": "PASS",
+      "detail": "Status: 400, Error: {'error': 'Name, email, and message are required fields.'}"
+    },
+    {
+      "name": "POST /api/contact (Valid Submission)",
+      "category": "Contact Form",
+      "status": "PASS",
+      "detail": "Status: 201"
+    },
+    {
+      "name": "POST /api/auth/login (Non-Whitelisted Email)",
+      "category": "Security Auth",
+      "status": "PASS",
+      "detail": "Status: 403 (Blocked as expected)"
+    },
+    {
+      "name": "POST /api/auth/login (Wrong Admin Password)",
+      "category": "Security Auth",
+      "status": "PASS",
+      "detail": "Status: 401 (Rejected as expected)"
+    },
+    {
+      "name": "GET /api/admin/messages (No Token)",
+      "category": "Security Protection",
+      "status": "PASS",
+      "detail": "Status: 401"
+    },
+    {
+      "name": "GET /api/admin/messages (Tampered Token)",
+      "category": "Security Protection",
+      "status": "PASS",
+      "detail": "Status: 401"
+    },
+    {
+      "name": "POST /api/auth/login (Valid Whitelisted Admin)",
+      "category": "Admin Session",
+      "status": "PASS",
+      "detail": "Token Received (217 chars)"
+    },
+    {
+      "name": "GET /api/auth/status (Valid Bearer Header)",
+      "category": "Admin Session",
+      "status": "PASS",
+      "detail": "Auth State: {'isAuthenticated': True, 'email': 'admin@tecoritham.com', 'supabaseAuth': True}"
+    },
+    {
+      "name": "POST /api/admin/projects (Create Project)",
+      "category": "Admin CMS",
+      "status": "PASS",
+      "detail": "Status: 201"
+    },
+    {
+      "name": "PUT /api/admin/projects/d8f4953c-1f17-42bc-b002-446ea7bd8a1e (Update)",
+      "category": "Admin CMS",
+      "status": "PASS",
+      "detail": "Status: 200"
+    },
+    {
+      "name": "DELETE /api/admin/projects/d8f4953c-1f17-42bc-b002-446ea7bd8a1e (Cleanup)",
+      "category": "Admin CMS",
+      "status": "PASS",
+      "detail": "Status: 200"
+    },
+    {
+      "name": "GET /api/admin/messages (Authenticated Inbox)",
+      "category": "Admin CMS",
+      "status": "PASS",
+      "detail": "Inbox Messages: 13"
+    },
+    {
+      "name": "PUT /api/admin/messages/0475f561-f718-4322-96a3-4e5627e15388/read",
+      "category": "Admin CMS",
+      "status": "PASS",
+      "detail": "Status: 200"
+    },
+    {
+      "name": "POST /api/upload (Unsupported .exe file)",
+      "category": "Asset Upload",
+      "status": "PASS",
+      "detail": "Status: 400 (Expected 400 Bad Request)"
+    },
+    {
+      "name": "POST /api/upload (Valid SVG Image)",
+      "category": "Asset Upload",
+      "status": "PASS",
+      "detail": "Status: 201, URL: http://localhost:5000/uploads/file-1786361006272-159702011.svg"
+    },
+    {
+      "name": "Vite Frontend Page Load (HTTP 200)",
+      "category": "Frontend UI",
+      "status": "PASS",
+      "detail": "Status: 200"
+    },
+    {
+      "name": "Favicon Link Element (/favicon.svg)",
+      "category": "Frontend UI",
+      "status": "PASS",
+      "detail": "Verified /favicon.svg link in index.html head"
+    }
+  ]
+}

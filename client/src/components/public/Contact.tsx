@@ -175,7 +175,7 @@ export default function Contact() {
                 value={formData.name}
                 onChange={handleChange}
                 disabled={status === 'loading'}
-                className="w-full bg-black/60 border border-border-subtle hover:border-border-active focus:border-brand-crimson text-white placeholder-text-muted rounded-lg px-4 py-3 text-sm focus:outline-none transition-colors duration-200"
+                className="w-full bg-surface-elevated border border-border-subtle hover:border-border-active focus:border-brand-crimson text-white placeholder-text-muted rounded-lg px-4 py-3 text-sm focus:outline-none transition-colors duration-200"
                 placeholder="John Doe"
               />
             </div>
@@ -191,7 +191,7 @@ export default function Contact() {
                 value={formData.email}
                 onChange={handleChange}
                 disabled={status === 'loading'}
-                className="w-full bg-black/60 border border-border-subtle hover:border-border-active focus:border-brand-crimson text-white placeholder-text-muted rounded-lg px-4 py-3 text-sm focus:outline-none transition-colors duration-200"
+                className="w-full bg-surface-elevated border border-border-subtle hover:border-border-active focus:border-brand-crimson text-white placeholder-text-muted rounded-lg px-4 py-3 text-sm focus:outline-none transition-colors duration-200"
                 placeholder="john@example.com"
               />
             </div>
@@ -208,14 +208,14 @@ export default function Contact() {
               value={formData.profession}
               onChange={handleChange}
               disabled={status === 'loading'}
-              className="w-full bg-black/60 border border-border-subtle hover:border-border-active focus:border-brand-crimson text-white rounded-lg px-4 py-3 text-sm focus:outline-none transition-colors duration-200 cursor-pointer"
+              className="w-full bg-surface-elevated border border-border-subtle hover:border-border-active focus:border-brand-crimson text-white rounded-lg px-4 py-3 text-sm focus:outline-none transition-colors duration-200 cursor-pointer"
             >
-              <option value="Recruiter / Hiring Manager" className="bg-black text-white">Recruiter / Hiring Manager</option>
-              <option value="Startup Founder / CEO" className="bg-black text-white">Startup Founder / CEO</option>
-              <option value="Client / Product Owner" className="bg-black text-white">Client / Product Owner</option>
-              <option value="Software Engineer / Peer" className="bg-black text-white">Software Engineer / Peer</option>
-              <option value="Student / Researcher" className="bg-black text-white">Student / Researcher</option>
-              <option value="Other Visitor" className="bg-black text-white">Other</option>
+              <option value="Recruiter / Hiring Manager" className="bg-surface-elevated text-white">Recruiter / Hiring Manager</option>
+              <option value="Startup Founder / CEO" className="bg-surface-elevated text-white">Startup Founder / CEO</option>
+              <option value="Client / Product Owner" className="bg-surface-elevated text-white">Client / Product Owner</option>
+              <option value="Software Engineer / Peer" className="bg-surface-elevated text-white">Software Engineer / Peer</option>
+              <option value="Student / Researcher" className="bg-surface-elevated text-white">Student / Researcher</option>
+              <option value="Other Visitor" className="bg-surface-elevated text-white">Other</option>
             </select>
           </div>
 
@@ -230,7 +230,7 @@ export default function Contact() {
               value={formData.subject}
               onChange={handleChange}
               disabled={status === 'loading'}
-              className="w-full bg-black/60 border border-border-subtle hover:border-border-active focus:border-brand-crimson text-white placeholder-text-muted rounded-lg px-4 py-3 text-sm focus:outline-none transition-colors duration-200"
+              className="w-full bg-surface-elevated border border-border-subtle hover:border-border-active focus:border-brand-crimson text-white placeholder-text-muted rounded-lg px-4 py-3 text-sm focus:outline-none transition-colors duration-200"
               placeholder="Project Collaboration"
             />
           </div>
@@ -246,7 +246,7 @@ export default function Contact() {
               value={formData.message}
               onChange={handleChange}
               disabled={status === 'loading'}
-              className="w-full bg-black/60 border border-border-subtle hover:border-border-active focus:border-brand-crimson text-white placeholder-text-muted rounded-lg px-4 py-3 text-sm focus:outline-none resize-none transition-colors duration-200"
+              className="w-full bg-surface-elevated border border-border-subtle hover:border-border-active focus:border-brand-crimson text-white placeholder-text-muted rounded-lg px-4 py-3 text-sm focus:outline-none resize-none transition-colors duration-200"
               placeholder="Hi Mohammad, I would love to discuss an engineering project with you..."
             />
           </div>

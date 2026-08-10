@@ -101,8 +101,9 @@ function Home() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-black text-white flex items-center justify-center font-display uppercase tracking-widest text-xs animate-pulse">
-        TECORITHAM — LOADING PROFILE...
+      <div className="min-h-screen bg-black text-white flex flex-col items-center justify-center gap-4 animate-pulse">
+        <img src="/logo.png" alt="TECORITHAM" className="h-12 w-auto object-contain" />
+        <span className="font-mono text-xs text-text-secondary uppercase tracking-widest">Loading Profile...</span>
       </div>
     );
   }

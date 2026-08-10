@@ -1,114 +1,101 @@
 import requests
 
 BASE_URL = "http://localhost:5000"
-ADMIN_CONTACT_MESSAGES_URL = f"{BASE_URL}/api/admin/contact-messages"
-AUTH_LOGIN_URL = f"{BASE_URL}/api/auth/login"
 TIMEOUT = 30
 
-# Admin credentials for authentication (should be set to valid test admin)
-ADMIN_CREDENTIALS = {
-    "email": "admin@example.com",
-    "password": "adminpassword"
-}
+# Replace these admin credentials with valid ones for testing
+ADMIN_EMAIL = "admin@example.com"
+ADMIN_PASSWORD = "strongpassword123"
 
-def get_jwt_token():
+def get_jwt_token(email, password):
+    url = f"{BASE_URL}/api/auth/login"
+    payload = {"email": email, "password": password}
     try:
-        resp = requests.post(AUTH_LOGIN_URL, json=ADMIN_CREDENTIALS, timeout=TIMEOUT)
+        resp = requests.post(url, json=payload, timeout=TIMEOUT)
         resp.raise_for_status()
-        token = resp.json().get("token")
-        assert token, "JWT token not found in login response"
+        data = resp.json()
+        token = data.get("token") or data.get("accessToken")
+        assert token, "JWT token missing in login response"
         return token
     except requests.RequestException as e:
-        assert False, f"Admin login failed: {str(e)}"
+        assert False, f"Admin login failed: {e}"
 
-def create_contact_message_for_test():
-    # Create a new contact message via public /api/contact for PATCH testing
-    # Use a valid contact form submission
-    url = f"{BASE_URL}/api/contact"
+def test_getadmincontactmessagesmanagement():
+    token = None
+    created_message_id = None
+
+    # Step 1: Submit a contact form message to have a message to PATCH
     contact_payload = {
         "name": "Test User",
         "email": "testuser@example.com",
-        "message": "This is a test contact message"
+        "message": "This is a test contact message for TC006."
     }
-    try:
-        resp = requests.post(url, json=contact_payload, timeout=TIMEOUT)
-        resp.raise_for_status()
-        data = resp.json()
-        # The created message ID might be returned in the response or must be fetched later
-        # If not returned, list and find by unique content
-        return data.get("id")
-    except requests.RequestException as e:
-        assert False, f"Failed to create contact message for test: {str(e)}"
-
-def delete_contact_message(message_id, token):
-    headers = {"Authorization": f"Bearer {token}"}
-    try:
-        # No explicit DELETE route for contact-messages given in PRD,
-        # so we skip deletion if none exists. Alternatively, skip cleanup.
-        # If DELETE existed: requests.delete(f"{ADMIN_CONTACT_MESSAGES_URL}/{message_id}", headers=headers, timeout=TIMEOUT)
-        pass
-    except Exception:
-        pass  # best effort cleanup
-
-def test_get_and_patch_admin_contact_messages_management():
-    # Get JWT token for auth
-    token = get_jwt_token()
-    headers = {"Authorization": f"Bearer {token}"}
-
-    # 1. Test GET /api/admin/contact-messages with valid JWT (should return 200 and a list)
-    try:
-        get_resp = requests.get(ADMIN_CONTACT_MESSAGES_URL, headers=headers, timeout=TIMEOUT)
-        assert get_resp.status_code == 200, f"Expected 200, got {get_resp.status_code}"
-        messages = get_resp.json()
-        # Expecting a list of messages (empty list is acceptable)
-        assert isinstance(messages, list), "Expected list of contact messages"
-
-    except requests.RequestException as e:
-        assert False, f"GET admin contact-messages failed: {str(e)}"
-
-    # 2. Setup: create a new contact message for PATCH testing
-    # If message id is not available, create one and patch it
-    message_id = None
-    try:
-        # Try to pick an existing message to patch, else create one
-        if messages and isinstance(messages, list):
-            message_id = messages[0].get("id")
-        if not message_id:
-            message_id = create_contact_message_for_test()
-        assert message_id, "No contact message ID available for PATCH test"
-    except AssertionError as e:
-        assert False, str(e)
 
     try:
-        # 3. Test PATCH /api/admin/contact-messages/:id with valid JWT and status update
-        patch_payload = {"status": "read"}
-        patch_resp = requests.patch(f"{ADMIN_CONTACT_MESSAGES_URL}/{message_id}", json=patch_payload, headers=headers, timeout=TIMEOUT)
-        assert patch_resp.status_code == 200, f"Expected 200 on PATCH, got {patch_resp.status_code}"
-        updated_message = patch_resp.json()
-        assert updated_message.get("status") == "read", "Message status not updated to 'read'"
-    except requests.RequestException as e:
-        assert False, f"PATCH admin contact-message failed: {str(e)}"
+        # Create a contact message first (public endpoint)
+        resp_contact = requests.post(f"{BASE_URL}/api/contact", json=contact_payload, timeout=TIMEOUT)
+        assert resp_contact.status_code == 201, f"Failed to create contact message, got {resp_contact.status_code}"
+
+        # Step 2: Obtain JWT token via admin login
+        token = get_jwt_token(ADMIN_EMAIL, ADMIN_PASSWORD)
+        headers = {"Authorization": f"Bearer {token}"}
+
+        # Step 3: GET /api/admin/contact-messages with valid JWT token
+        resp_get = requests.get(f"{BASE_URL}/api/admin/contact-messages", headers=headers, timeout=TIMEOUT)
+        assert resp_get.status_code == 200, f"GET contact-messages failed with status {resp_get.status_code}"
+        messages = resp_get.json()
+        assert isinstance(messages, list), "Expected a list of contact messages"
+
+        # Find the created message by matching email and message content
+        found_message = None
+        for m in messages:
+            if (
+                m.get("email") == contact_payload["email"] and
+                m.get("message") == contact_payload["message"] and
+                m.get("name") == contact_payload["name"]
+            ):
+                found_message = m
+                break
+
+        assert found_message, "Created contact message not found in admin GET"
+        created_message_id = found_message.get("id")
+        assert created_message_id, "Found contact message missing 'id'"
+
+        # Step 4: PATCH /api/admin/contact-messages/:id with valid JWT token to update status
+        patch_payload = {"status": "resolved"}
+        resp_patch = requests.patch(
+            f"{BASE_URL}/api/admin/contact-messages/{created_message_id}",
+            headers={**headers, "Content-Type": "application/json"},
+            json=patch_payload,
+            timeout=TIMEOUT,
+        )
+        assert resp_patch.status_code == 200, f"PATCH update failed with status {resp_patch.status_code}"
+        updated_message = resp_patch.json()
+        assert updated_message.get("status") == "resolved", "Status not updated to 'resolved'"
+
+        # Step 5: Attempt GET /api/admin/contact-messages without JWT token (unauthorized)
+        resp_get_unauth = requests.get(f"{BASE_URL}/api/admin/contact-messages", timeout=TIMEOUT)
+        assert resp_get_unauth.status_code in (401, 403), "Expected 401 or 403 without auth on GET"
+
+        # Step 6: Attempt PATCH /api/admin/contact-messages/:id without JWT token (unauthorized)
+        resp_patch_unauth = requests.patch(
+            f"{BASE_URL}/api/admin/contact-messages/{created_message_id}",
+            json=patch_payload,
+            timeout=TIMEOUT,
+        )
+        assert resp_patch_unauth.status_code in (401, 403), "Expected 401 or 403 without auth on PATCH"
+
     finally:
-        # Clean up: optionally delete created contact message if it was newly created
-        if message_id:
+        # Cleanup: If API provides a DELETE for contact messages, attempt to delete.
+        if token and created_message_id:
             try:
-                delete_contact_message(message_id, token)
+                headers = {"Authorization": f"Bearer {token}"}
+                delete_url = f"{BASE_URL}/api/admin/contact-messages/{created_message_id}"
+                del_resp = requests.delete(delete_url, headers=headers, timeout=TIMEOUT)
+                # 204 expected on success or 404 if already deleted or not allowed
+                if del_resp.status_code not in (204, 404):
+                    print(f"Warning: unexpected status {del_resp.status_code} on cleanup DELETE")
             except Exception:
                 pass
 
-    # 4. Test GET /api/admin/contact-messages without JWT or invalid JWT (expect 401/403)
-    try:
-        no_auth_resp = requests.get(ADMIN_CONTACT_MESSAGES_URL, timeout=TIMEOUT)
-        assert no_auth_resp.status_code in (401, 403), f"Expected 401/403 without auth, got {no_auth_resp.status_code}"
-    except requests.RequestException as e:
-        assert False, f"GET admin contact-messages without auth failed: {str(e)}"
-
-    # 5. Test PATCH /api/admin/contact-messages/:id without JWT or invalid JWT (expect 401/403)
-    invalid_headers = {"Authorization": "Bearer invalidtoken"}
-    try:
-        patch_resp_unauth = requests.patch(f"{ADMIN_CONTACT_MESSAGES_URL}/{message_id}", json={"status": "resolved"}, timeout=TIMEOUT)
-        assert patch_resp_unauth.status_code in (401, 403), f"Expected 401/403 on PATCH without auth, got {patch_resp_unauth.status_code}"
-    except requests.RequestException as e:
-        assert False, f"PATCH admin contact-message without auth failed: {str(e)}"
-
-test_get_and_patch_admin_contact_messages_management()
+test_getadmincontactmessagesmanagement()

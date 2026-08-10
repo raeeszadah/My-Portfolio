@@ -1,0 +1,195 @@
+{
+  "timestamp": "2026-08-10 17:11:08",
+  "total": 31,
+  "passed": 31,
+  "failed": 0,
+  "pass_rate": "100.0%",
+  "results": [
+    {
+      "name": "Admin Whitelisted Authentication",
+      "category": "Authentication",
+      "status": "PASS",
+      "detail": "Session token issued"
+    },
+    {
+      "name": "PUT /api/admin/profile (Update)",
+      "category": "Profile Flow",
+      "status": "PASS",
+      "detail": "Status: 200"
+    },
+    {
+      "name": "GET /api/profile (Frontend Persistence Check)",
+      "category": "Profile Flow",
+      "status": "PASS",
+      "detail": "Reflected Bio: E2E Test Bio Updated at 1786362062"
+    },
+    {
+      "name": "Restore Original Profile State",
+      "category": "Profile Flow",
+      "status": "PASS",
+      "detail": "Original profile restored successfully"
+    },
+    {
+      "name": "POST /api/upload (PDF Resume Upload)",
+      "category": "Resume Flow",
+      "status": "PASS",
+      "detail": "PDF URL: http://localhost:5000/uploads/file-1786362064630-452877360.pdf"
+    },
+    {
+      "name": "GET /uploads/sample_resume.pdf (Download Check)",
+      "category": "Resume Flow",
+      "status": "PASS",
+      "detail": "Downloaded 320 bytes"
+    },
+    {
+      "name": "POST /api/admin/socials (Create)",
+      "category": "Socials Flow",
+      "status": "PASS",
+      "detail": "Created ID: 9a92aca9-3255-4230-bcc5-6c9d3747379f"
+    },
+    {
+      "name": "GET /api/socials (Reflection Assert)",
+      "category": "Socials Flow",
+      "status": "PASS",
+      "detail": "Social Item Reflected: True"
+    },
+    {
+      "name": "DELETE /api/admin/socials/9a92aca9-3255-4230-bcc5-6c9d3747379f",
+      "category": "Socials Flow",
+      "status": "PASS",
+      "detail": "Cleaned up test social item"
+    },
+    {
+      "name": "POST /api/admin/skills (Create Skill)",
+      "category": "Skills Flow",
+      "status": "PASS",
+      "detail": "Skill ID: 5c7fdd4c-98be-443b-81b1-6eefd092756f"
+    },
+    {
+      "name": "GET /api/skills (Reflection Assert)",
+      "category": "Skills Flow",
+      "status": "PASS",
+      "detail": "Skill Reflected: True"
+    },
+    {
+      "name": "DELETE /api/admin/skills/5c7fdd4c-98be-443b-81b1-6eefd092756f",
+      "category": "Skills Flow",
+      "status": "PASS",
+      "detail": "Cleaned up test skill"
+    },
+    {
+      "name": "POST /api/admin/experience (Create)",
+      "category": "Timeline Flow",
+      "status": "PASS",
+      "detail": "Exp ID: 8c2cea5d-08b5-4498-ba37-3665a3804149"
+    },
+    {
+      "name": "POST /api/admin/education (Create)",
+      "category": "Timeline Flow",
+      "status": "PASS",
+      "detail": "Edu ID: 3f4f1fe7-b6c8-4b32-a0b7-fe0cf682d519"
+    },
+    {
+      "name": "GET /api/timeline (Experience Reflection Assert)",
+      "category": "Timeline Flow",
+      "status": "PASS",
+      "detail": "Reflected: True"
+    },
+    {
+      "name": "Cleanup Timeline Test Records",
+      "category": "Timeline Flow",
+      "status": "PASS",
+      "detail": "Cleaned up test experience and education"
+    },
+    {
+      "name": "POST /api/admin/certifications (Create)",
+      "category": "Certifications Flow",
+      "status": "PASS",
+      "detail": "Cert ID: ecc6cdf3-df42-484c-8a68-bc9971dd2bc8"
+    },
+    {
+      "name": "PUT /api/admin/certifications/ecc6cdf3-df42-484c-8a68-bc9971dd2bc8 (Edit)",
+      "category": "Certifications Flow",
+      "status": "PASS",
+      "detail": "Updated title"
+    },
+    {
+      "name": "DELETE /api/admin/certifications/ecc6cdf3-df42-484c-8a68-bc9971dd2bc8 (Cleanup)",
+      "category": "Certifications Flow",
+      "status": "PASS",
+      "detail": "Cleaned up test cert"
+    },
+    {
+      "name": "POST /api/admin/projects (Create Project)",
+      "category": "Project Flow",
+      "status": "PASS",
+      "detail": "Project ID: 26503379-de77-4e2f-bee0-430123f4acb1"
+    },
+    {
+      "name": "GET /api/projects (Reflection Assert)",
+      "category": "Project Flow",
+      "status": "PASS",
+      "detail": "Project Reflected: True"
+    },
+    {
+      "name": "PUT /api/admin/projects/26503379-de77-4e2f-bee0-430123f4acb1 (Update)",
+      "category": "Project Flow",
+      "status": "PASS",
+      "detail": "Updated project details"
+    },
+    {
+      "name": "DELETE /api/admin/projects/26503379-de77-4e2f-bee0-430123f4acb1 (Cleanup)",
+      "category": "Project Flow",
+      "status": "PASS",
+      "detail": "Cleaned up test project"
+    },
+    {
+      "name": "POST /api/contact (Client Inquiry Submission)",
+      "category": "Inbox E2E",
+      "status": "PASS",
+      "detail": "Status: 201"
+    },
+    {
+      "name": "GET /api/admin/messages (Inbox Retrieval)",
+      "category": "Inbox E2E",
+      "status": "PASS",
+      "detail": "Found submitted message ID: 762b8b1a-e40f-4805-b395-7d4dd2004bc0"
+    },
+    {
+      "name": "PUT /api/admin/messages/762b8b1a-e40f-4805-b395-7d4dd2004bc0/read",
+      "category": "Inbox E2E",
+      "status": "PASS",
+      "detail": "Marked message as read"
+    },
+    {
+      "name": "POST /api/admin/messages/762b8b1a-e40f-4805-b395-7d4dd2004bc0/reply",
+      "category": "Inbox E2E",
+      "status": "PASS",
+      "detail": "Reply Sent & Saved: True"
+    },
+    {
+      "name": "Verify Conversation History Thread State",
+      "category": "Inbox E2E",
+      "status": "PASS",
+      "detail": "Replied State: True, Replies Count: 1"
+    },
+    {
+      "name": "DELETE /api/admin/messages/762b8b1a-e40f-4805-b395-7d4dd2004bc0 (Cleanup)",
+      "category": "Inbox E2E",
+      "status": "PASS",
+      "detail": "Deleted test message"
+    },
+    {
+      "name": "POST /api/upload (Raw .exe upload)",
+      "category": "Upload Edge Cases",
+      "status": "PASS",
+      "detail": "Status: 400 (400 Bad Request)"
+    },
+    {
+      "name": "100% Admin Protected Routes Unauthenticated Block",
+      "category": "Protected Routes Security",
+      "status": "PASS",
+      "detail": "All 12 protected endpoints returned 401/403 when called without JWT token"
+    }
+  ]
+}

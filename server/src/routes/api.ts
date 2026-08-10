@@ -943,10 +943,41 @@ const handleFileUpload = (req: Request, res: Response) => {
   res.status(201).json({ success: true, fileUrl, url: fileUrl });
 };
 
-router.post('/upload', upload.single('file'), handleFileUpload);
-router.post('/uploads', upload.single('file'), handleFileUpload);
-router.post('/admin/upload', authenticateJWT, upload.single('file'), handleFileUpload);
-router.post('/admin/uploads', authenticateJWT, upload.single('file'), handleFileUpload);
+const uploadSingleFile = (req: Request, res: Response, next: NextFunction) => {
+  upload.single('file')(req, res, (err: any) => {
+    if (err) {
+      return res.status(400).json({ error: err.message || 'File upload validation failed.' });
+    }
+    if (req.file && req.file.filename.toLowerCase().endsWith('.svg')) {
+      const filePath = req.file.path;
+      try {
+        const svgContent = fs.readFileSync(filePath, 'utf-8');
+        const lowerContent = svgContent.toLowerCase();
+        const hasScript =
+          lowerContent.includes('<script') ||
+          lowerContent.includes('javascript:') ||
+          lowerContent.includes('onload=') ||
+          lowerContent.includes('onerror=') ||
+          lowerContent.includes('onclick=');
+
+        if (hasScript) {
+          try {
+            fs.unlinkSync(filePath);
+          } catch {}
+          return res.status(400).json({ error: 'SVG upload rejected: file contains inline script or event handler.' });
+        }
+      } catch (readErr) {
+        console.warn('SVG inspection warning:', readErr);
+      }
+    }
+    handleFileUpload(req, res);
+  });
+};
+
+router.post('/upload', uploadSingleFile);
+router.post('/uploads', uploadSingleFile);
+router.post('/admin/upload', authenticateJWT, uploadSingleFile);
+router.post('/admin/uploads', authenticateJWT, uploadSingleFile);
 
 
 export default router;

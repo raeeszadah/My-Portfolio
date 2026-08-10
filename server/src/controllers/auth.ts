@@ -6,7 +6,11 @@ import { supabaseServer } from '../config/supabase';
 dotenv.config({ path: '../.env' });
 dotenv.config();
 
-const JWT_SECRET = process.env.JWT_SECRET || 'tecoritham_super_secret_jwt_key_2026';
+if (process.env.NODE_ENV === 'production' && !process.env.JWT_SECRET) {
+  console.error('FATAL ERROR: JWT_SECRET environment variable is missing in production mode.');
+}
+
+const JWT_SECRET = process.env.JWT_SECRET || (process.env.NODE_ENV !== 'production' ? 'tecoritham_super_secret_jwt_key_2026' : '');
 
 // Helper to get allowed admin email list
 const getAuthorizedEmails = (): string[] => {

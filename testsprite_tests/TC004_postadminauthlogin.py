@@ -1,15 +1,18 @@
 import requests
 
 BASE_URL = "http://localhost:5000"
-LOGIN_ENDPOINT = "/api/auth/login"
+LOGIN_ENDPOINT = f"{BASE_URL}/api/auth/login"
 TIMEOUT = 30
 HEADERS = {"Content-Type": "application/json"}
 
-def test_postadminauthlogin():
+def test_post_admin_auth_login():
+    # Valid admin credentials (replace with actual valid credentials if known)
     valid_credentials = {
         "email": "admin@example.com",
         "password": "correct_password"
     }
+
+    # Invalid admin credentials
     invalid_credentials = {
         "email": "admin@example.com",
         "password": "wrong_password"
@@ -17,34 +20,47 @@ def test_postadminauthlogin():
 
     # Test valid login
     try:
-        response_valid = requests.post(
-            BASE_URL + LOGIN_ENDPOINT,
+        valid_response = requests.post(
+            LOGIN_ENDPOINT,
             json=valid_credentials,
             headers=HEADERS,
             timeout=TIMEOUT
         )
     except requests.RequestException as e:
-        assert False, f"Request failed on valid login: {e}"
-    
-    assert response_valid.status_code == 200, f"Expected 200 OK for valid login, got {response_valid.status_code}"
-    json_valid = response_valid.json()
-    assert "token" in json_valid, "JWT token missing in response for valid login"
-    assert isinstance(json_valid["token"], str) and len(json_valid["token"]) > 0, "JWT token is empty or not a string"
+        assert False, f"Valid login request failed: {e}"
+
+    assert valid_response.status_code == 200, f"Expected 200 OK for valid login, got {valid_response.status_code}"
+    try:
+        valid_json = valid_response.json()
+    except ValueError:
+        assert False, "Response to valid login is not valid JSON"
+
+    # Validate JWT token presence as a non-empty string in response (commonly a 'token' or 'jwt' field)
+    token = valid_json.get("token") or valid_json.get("jwt") or valid_json.get("accessToken")
+    assert token and isinstance(token, str) and len(token) > 10, "Valid login did not return a valid JWT token"
 
     # Test invalid login
     try:
-        response_invalid = requests.post(
-            BASE_URL + LOGIN_ENDPOINT,
+        invalid_response = requests.post(
+            LOGIN_ENDPOINT,
             json=invalid_credentials,
             headers=HEADERS,
             timeout=TIMEOUT
         )
     except requests.RequestException as e:
-        assert False, f"Request failed on invalid login: {e}"
+        assert False, f"Invalid login request failed: {e}"
 
-    assert response_invalid.status_code == 401, f"Expected 401 Unauthorized for invalid login, got {response_invalid.status_code}"
-    json_invalid = response_invalid.json()
-    # Usually an error message is expected on 401, check that it exists and is string
-    assert "message" in json_invalid or "error" in json_invalid, "Error message missing in response for invalid login"
+    assert invalid_response.status_code == 401, f"Expected 401 Unauthorized for invalid login, got {invalid_response.status_code}"
 
-test_postadminauthlogin()
+    try:
+        invalid_json = invalid_response.json()
+    except ValueError:
+        # Some APIs may return empty body on 401
+        invalid_json = {}
+
+    # Optionally check for an error message or authentication error key presence
+    error_message = invalid_json.get("message") or invalid_json.get("error")
+    assert error_message or invalid_response.text, "Invalid login response missing error message or content"
+
+
+test_post_admin_auth_login()

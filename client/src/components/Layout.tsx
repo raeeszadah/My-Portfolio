@@ -60,9 +60,7 @@ export default function Layout({ children }: LayoutProps) {
       const el = document.getElementById(id);
       if (!el) return;
 
-      const threshold = id === 'projects' ? 0.05 : 0.35;
-
-      const obs = new IntersectionObserver(
+      const observer = new IntersectionObserver(
         (entries) => {
           entries.forEach((entry) => {
             if (entry.isIntersecting) {
@@ -70,11 +68,11 @@ export default function Layout({ children }: LayoutProps) {
             }
           });
         },
-        { threshold }
+        { threshold: 0.3 }
       );
 
-      obs.observe(el);
-      observers.push(obs);
+      observer.observe(el);
+      observers.push(observer);
     });
 
     return () => observers.forEach((obs) => obs.disconnect());
@@ -126,7 +124,7 @@ export default function Layout({ children }: LayoutProps) {
     `transition-colors cursor-pointer ${
       activeSection === section
         ? 'text-brand-crimson font-bold'
-        : 'hover:text-white text-text-secondary'
+        : 'hover:text-brand-crimson text-text-secondary'
     }`;
 
   const renderSocialIcon = (platform: string) => {
@@ -150,16 +148,16 @@ export default function Layout({ children }: LayoutProps) {
 
 
   return (
-    <div className="min-h-screen bg-black text-white flex flex-col font-body relative">
+    <div className="min-h-screen bg-background text-text-primary flex flex-col font-body relative transition-colors duration-300">
       {/* Sticky Header */}
-      <header className="sticky top-0 w-full h-20 bg-black/85 backdrop-blur-md border-b border-border-subtle z-50 transition-colors duration-300">
+      <header className="sticky top-0 w-full h-20 bg-background/85 backdrop-blur-md border-b border-border-subtle z-50 transition-colors duration-300">
         <div className="max-w-7xl mx-auto px-6 h-full flex items-center justify-between">
           <Link
             to="/"
-            className="font-display font-black text-xl tracking-wider select-none hover:text-brand-crimson transition-colors flex items-center gap-2"
+            className="select-none flex items-center hover:opacity-90 transition-opacity"
+            aria-label="TECORITHAM Homepage"
           >
-            <span>TECORITHAM</span>
-            <span className="text-xs font-mono text-brand-crimson/80 font-normal">| Mohammad Raees</span>
+            <img src="/logo.png" alt="TECORITHAM" className="h-14 md:h-16 w-auto max-h-16 object-contain" />
           </Link>
 
           {/* Desktop Nav */}
@@ -238,18 +236,17 @@ export default function Layout({ children }: LayoutProps) {
           <div className="grid grid-cols-1 md:grid-cols-4 gap-10 pb-12 border-b border-border-subtle">
             {/* Column 1: Brand & Info */}
             <div className="md:col-span-2 flex flex-col gap-4">
-              <div className="flex flex-col gap-1">
-                <div className="font-display font-black text-2xl tracking-widest text-white flex items-center gap-2">
-                  <span>TECORITHAM</span>
-                  <span className="text-sm font-mono text-brand-crimson font-normal">| Mohammad Raees</span>
-                </div>
+              <div className="flex flex-col gap-3">
+                <Link to="/" className="w-fit select-none flex items-center hover:opacity-90 transition-opacity">
+                  <img src="/logo.png" alt="TECORITHAM" className="h-14 md:h-16 w-auto max-h-16 object-contain" />
+                </Link>
                 <p className="text-xs text-text-secondary leading-relaxed max-w-md font-body">
                   Engineering high-performance web applications, scalable backend REST APIs, and responsive interactive design systems.
                 </p>
               </div>
 
               {/* Dynamic Location / Address Badge */}
-              <div className="flex items-center gap-2 text-xs font-mono text-white/90 bg-black/60 border border-border-subtle px-3.5 py-2 rounded-lg w-fit">
+              <div className="flex items-center gap-2 text-xs font-mono text-white/90 bg-surface-overlay/80 border border-border-subtle px-3.5 py-2 rounded-lg w-fit">
                 <MapPin className="size-3.5 text-brand-crimson shrink-0" />
                 <span>{profile?.location || 'Pune, Maharashtra, India / Remote Worldwide'}</span>
               </div>
@@ -301,7 +298,7 @@ export default function Layout({ children }: LayoutProps) {
                     href={social.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="size-9 rounded-lg bg-black/60 border border-border-subtle flex items-center justify-center text-text-secondary hover:text-white hover:bg-brand-crimson/20 hover:border-brand-crimson transition-all duration-300 hover:-translate-y-0.5"
+                    className="size-9 rounded-lg bg-surface-overlay border border-border-subtle flex items-center justify-center text-text-secondary hover:text-white hover:bg-brand-crimson/20 hover:border-brand-crimson transition-all duration-300 hover:-translate-y-0.5"
                     title={`${social.platform} - ${social.username || social.url}`}
                   >
                     <span className="sr-only">{social.platform}</span>
@@ -310,9 +307,9 @@ export default function Layout({ children }: LayoutProps) {
                 ))}
                 {socials.length === 0 && (
                   <div className="flex gap-2">
-                    <a href="https://github.com" target="_blank" rel="noreferrer" className="size-9 rounded-lg bg-black/60 border border-border-subtle flex items-center justify-center text-text-secondary hover:text-white"><Github className="size-4" /></a>
-                    <a href="https://linkedin.com" target="_blank" rel="noreferrer" className="size-9 rounded-lg bg-black/60 border border-border-subtle flex items-center justify-center text-text-secondary hover:text-white"><Linkedin className="size-4" /></a>
-                    <a href="mailto:mearaees@gmail.com" className="size-9 rounded-lg bg-black/60 border border-border-subtle flex items-center justify-center text-text-secondary hover:text-white"><Mail className="size-4" /></a>
+                    <a href="https://github.com" target="_blank" rel="noreferrer" className="size-9 rounded-lg bg-surface-overlay border border-border-subtle flex items-center justify-center text-text-secondary hover:text-white"><Github className="size-4" /></a>
+                    <a href="https://linkedin.com" target="_blank" rel="noreferrer" className="size-9 rounded-lg bg-surface-overlay border border-border-subtle flex items-center justify-center text-text-secondary hover:text-white"><Linkedin className="size-4" /></a>
+                    <a href="mailto:mearaees@gmail.com" className="size-9 rounded-lg bg-surface-overlay border border-border-subtle flex items-center justify-center text-text-secondary hover:text-white"><Mail className="size-4" /></a>
                   </div>
                 )}
               </div>
@@ -322,14 +319,14 @@ export default function Layout({ children }: LayoutProps) {
           {/* Bottom Copyright Row */}
           <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-xs font-mono">
             <div>
-              &copy; {new Date().getFullYear()} <span className="text-white font-semibold">TECORITHAM | Mohammad Raees</span>. All Rights Reserved.
+              &copy; {new Date().getFullYear()} <span className="text-white font-semibold">TECORITHAM</span>. All Rights Reserved.
             </div>
 
             <div className="flex items-center gap-3">
               <span className="text-text-muted text-[10px]">ADMIN CONTROL PANEL</span>
               <button
                 onClick={() => navigate('/admin/login')}
-                className="p-2 rounded-lg bg-black/60 border border-border-subtle text-text-muted hover:text-brand-crimson hover:border-brand-crimson transition-colors cursor-pointer"
+                className="p-2 rounded-lg bg-surface-overlay border border-border-subtle text-text-muted hover:text-brand-crimson hover:border-brand-crimson transition-colors cursor-pointer"
                 title="Admin Panel CMS Login"
               >
                 <Shield className="size-4" />

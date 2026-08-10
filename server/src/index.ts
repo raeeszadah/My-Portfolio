@@ -12,6 +12,12 @@ import apiRouter from './routes/api';
 dotenv.config({ path: '../.env' });
 dotenv.config();
 
+// Startup check for JWT_SECRET in production mode
+if (process.env.NODE_ENV === 'production' && !process.env.JWT_SECRET) {
+  console.error('CRITICAL FATAL ERROR: JWT_SECRET environment variable must be set in production mode.');
+  process.exit(1);
+}
+
 const app = express();
 const PORT = process.env.PORT || 5000;
 
@@ -22,10 +28,25 @@ app.use(
   })
 );
 
-// CORS configuration
+// Strict CORS Configuration (FRONTEND_URL & CLIENT_ORIGIN)
+const allowedOrigins = [
+  process.env.FRONTEND_URL,
+  process.env.CLIENT_ORIGIN,
+  'http://localhost:5173',
+  'http://127.0.0.1:5173',
+  'http://localhost:3000',
+].filter(Boolean) as string[];
+
 app.use(
   cors({
-    origin: process.env.CLIENT_ORIGIN || 'http://localhost:5173',
+    origin: (origin, callback) => {
+      // Allow requests with no origin (e.g. mobile apps, curl, server-to-server) or listed origins
+      if (!origin || allowedOrigins.includes(origin) || allowedOrigins.some((o) => origin.startsWith(o))) {
+        callback(null, true);
+      } else {
+        callback(new Error(`CORS Policy Rejection: Origin ${origin} not permitted.`));
+      }
+    },
     credentials: true,
   })
 );
@@ -45,8 +66,18 @@ app.use((req: any, res: Response, next: NextFunction) => {
   next();
 });
 
-// Serve uploaded files statically
-app.use('/uploads', express.static(path.join(__dirname, '../public/uploads')));
+// Serve uploaded static files with CSP sandbox security headers for SVG assets
+app.use(
+  '/uploads',
+  express.static(path.join(__dirname, '../public/uploads'), {
+    setHeaders: (res, filePath) => {
+      if (filePath.toLowerCase().endsWith('.svg')) {
+        res.setHeader('Content-Security-Policy', "default-src 'none'; style-src 'unsafe-inline'; sandbox");
+        res.setHeader('X-Content-Type-Options', 'nosniff');
+      }
+    },
+  })
+);
 
 // Health Check Route
 app.get('/api/health', (req: Request, res: Response) => {
@@ -62,7 +93,17 @@ app.get('/api/health', (req: Request, res: Response) => {
   });
 });
 
-// Rate limiting for public API routes
+// Strict Rate Limiting for Login Attempts (5 attempts per 15 minutes per IP)
+const authLoginLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 5,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: 'Too many login attempts. Please try again after 15 minutes.' },
+});
+app.use('/api/auth/login', authLoginLimiter);
+
+// General Rate limiting for public API routes
 const apiLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 200,

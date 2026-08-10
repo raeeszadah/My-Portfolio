@@ -104,7 +104,7 @@ export default function Projects({ projects }: ProjectsProps) {
       {/* Viewport Screen-Fitted Pinned Container */}
       <div ref={pinContainerRef} className="w-full flex flex-col gap-6 min-h-[calc(100vh-100px)] justify-center py-4">
         {/* Header */}
-        <div className="flex items-center justify-between flex-wrap gap-4 border-b border-border-subtle pb-4 relative z-30 bg-black/90 backdrop-blur-md shrink-0">
+        <div className="flex items-center justify-between flex-wrap gap-4 border-b border-border-subtle pb-4 relative z-30 bg-background/95 backdrop-blur-md shrink-0">
           <div>
             <div className="flex items-center gap-2 mb-1">
               <span className="h-px w-6 bg-brand-crimson" />
@@ -162,8 +162,8 @@ export default function Projects({ projects }: ProjectsProps) {
                   <div className="absolute inset-0 border border-brand-crimson/0 group-hover:border-brand-crimson/40 rounded-2xl pointer-events-none transition-all duration-500 shadow-[0_0_35px_rgba(255,0,27,0.14)]" />
 
                   {/* 16:9 Primary Screenshot / Media Container */}
-                  <div className="w-full lg:w-7/12 bg-black/90 relative overflow-hidden flex items-center justify-center border-b lg:border-b-0 lg:border-r border-border-subtle shrink-0 p-3 lg:p-4">
-                    <div className="w-full aspect-video rounded-xl overflow-hidden bg-black/80 border border-border-subtle/60 relative flex items-center justify-center group-hover:border-brand-crimson/30 transition-colors">
+                  <div className="w-full lg:w-7/12 bg-surface-elevated/90 relative overflow-hidden flex items-center justify-center border-b lg:border-b-0 lg:border-r border-border-subtle shrink-0 p-3 lg:p-4">
+                    <div className="w-full aspect-video rounded-xl overflow-hidden bg-surface-overlay/80 border border-border-subtle/60 relative flex items-center justify-center group-hover:border-brand-crimson/30 transition-colors">
                       {videoSrc ? (
                         <video
                           src={videoSrc}

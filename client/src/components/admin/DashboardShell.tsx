@@ -59,43 +59,44 @@ export default function DashboardShell() {
         apiFetch('admin/messages'),
       ]);
 
-      const projects = await projRes.json();
-      const skills = await skillRes.json();
-      const messages = await msgRes.json();
+      const [projects, skills, messages] = await Promise.all([
+        projRes.json(),
+        skillRes.json(),
+        msgRes.json(),
+      ]);
+
+      const unread = Array.isArray(messages)
+        ? messages.filter((m: any) => !m.read).length
+        : 0;
 
       setStats({
         projects: Array.isArray(projects) ? projects.length : 0,
         skills: Array.isArray(skills) ? skills.length : 0,
         messages: Array.isArray(messages) ? messages.length : 0,
-        unreadMessages: Array.isArray(messages) ? messages.filter((m: any) => !m.read).length : 0,
+        unreadMessages: unread,
       });
     } catch (err) {
-      console.error('Error fetching dashboard statistics:', err);
+      console.error('Failed to load dashboard statistics:', err);
     }
   };
 
   const handleLogout = async () => {
-    try {
-      localStorage.removeItem('admin_token');
-      await supabase.auth.signOut();
-      await apiFetch('auth/logout', { method: 'POST' });
-    } catch (err) {
-      console.error('Logout error:', err);
-    } finally {
-      navigate('/admin/login');
-    }
+    await supabase.auth.signOut();
+    localStorage.removeItem('admin_token');
+    await apiFetch('auth/logout', { method: 'POST' });
+    navigate('/admin/login');
   };
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-black text-white flex items-center justify-center font-display uppercase tracking-widest text-xs animate-pulse">
-        Loading admin workspace...
+      <div className="min-h-screen bg-background text-text-primary flex items-center justify-center font-display uppercase tracking-widest text-xs animate-pulse">
+        VERIFYING ADMINISTRATOR SECURITY CREDENTIALS...
       </div>
     );
   }
 
   const sidebarLinks = [
-    { name: 'Overview', path: '', icon: LayoutDashboard },
+    { name: 'Dashboard Overview', path: '', icon: LayoutDashboard },
     { name: 'Profile & Resume', path: 'profile', icon: User },
     { name: 'Social Media Links', path: 'socials', icon: Share2 },
     { name: 'Skills & Tech', path: 'skills', icon: Sliders },
@@ -107,25 +108,23 @@ export default function DashboardShell() {
 
 
   return (
-    <div className="min-h-screen bg-black text-white flex flex-col md:flex-row relative">
+    <div className="min-h-screen bg-background text-text-primary flex flex-col md:flex-row relative transition-colors duration-300">
       {/* Sidebar Navigation */}
       <aside className="w-full md:w-64 shrink-0 bg-surface-card border-r border-border-subtle flex flex-col justify-between py-6">
         <div className="flex flex-col gap-8">
           {/* Logo Header - Navigates to Public Homepage */}
           <Link
             to="/"
-            className="px-6 border-b border-border-subtle pb-4 flex items-center justify-between group hover:opacity-90 transition-all select-none"
+            className="px-6 border-b border-border-subtle pb-4 flex flex-col gap-2 group hover:opacity-90 transition-all select-none"
             title="Click to view Public Portfolio Homepage"
           >
-            <div>
-              <div className="font-display font-black text-base tracking-widest text-white group-hover:text-brand-crimson transition-colors flex items-center gap-1.5">
-                <span>TECORITHAM</span>
-                <ExternalLink className="size-3 text-text-muted group-hover:text-brand-crimson transition-colors" />
-              </div>
-              <span className="text-[10px] text-brand-crimson font-bold block uppercase tracking-wider">
-                ADMIN PANEL &rarr; HOMEPAGE
-              </span>
+            <div className="flex items-center justify-between w-full">
+              <img src="/logo.png" alt="TECORITHAM" className="h-10 w-auto object-contain" />
+              <ExternalLink className="size-4 text-text-muted group-hover:text-brand-crimson transition-colors" />
             </div>
+            <span className="text-[10px] text-brand-crimson font-bold uppercase tracking-wider">
+              ADMIN PANEL &rarr; HOMEPAGE
+            </span>
           </Link>
 
           {/* Nav links */}
@@ -136,14 +135,14 @@ export default function DashboardShell() {
                 <Link
                   key={link.name}
                   to={link.path}
-                  className="flex items-center justify-between p-3.5 rounded text-xs font-semibold text-text-secondary hover:text-white hover:bg-white/5 transition-all duration-200"
+                  className="flex items-center justify-between p-3.5 rounded text-xs font-semibold text-text-secondary hover:text-text-primary hover:bg-surface-overlay transition-all duration-200"
                 >
                   <div className="flex items-center gap-3">
                     <Icon className="size-4 text-brand-crimson" />
-                    <span className="uppercase tracking-wider">{link.name}</span>
+                    <span>{link.name}</span>
                   </div>
-                  {link.badge && link.badge > 0 ? (
-                    <span className="bg-brand-crimson text-white px-2 py-0.5 rounded-full text-[9px] font-mono">
+                  {link.badge !== undefined && link.badge > 0 ? (
+                    <span className="px-2 py-0.5 rounded-full text-[10px] font-mono bg-brand-crimson text-white font-bold animate-pulse">
                       {link.badge}
                     </span>
                   ) : (
@@ -155,23 +154,24 @@ export default function DashboardShell() {
           </nav>
         </div>
 
-        <div className="px-3 flex flex-col gap-2 pt-6 border-t border-border-subtle">
+        {/* Sidebar Footer Controls */}
+        <div className="px-3 flex flex-col gap-3">
           <Link
             to="/"
-            className="w-full flex items-center gap-2.5 p-3 rounded-lg bg-white/5 border border-border-subtle text-xs font-mono text-text-secondary hover:text-white hover:border-brand-crimson/50 transition-all"
+            className="w-full flex items-center gap-2.5 p-3 rounded-lg bg-surface-overlay border border-border-subtle text-xs font-mono text-text-secondary hover:text-text-primary hover:border-brand-crimson/50 transition-all"
           >
             <Globe className="size-3.5 text-brand-crimson" />
             <span className="uppercase tracking-wider">VIEW PUBLIC WEBSITE</span>
           </Link>
 
-          <div className="px-3 text-[10px] font-mono text-text-muted select-none mt-2">
+          <div className="px-3 text-[10px] font-mono text-text-muted select-none mt-1">
             SIGNED IN AS:<br />
-            <span className="text-white truncate block">{user?.email}</span>
+            <span className="text-text-primary truncate block">{user?.email}</span>
           </div>
 
           <button
             onClick={handleLogout}
-            className="w-full flex items-center gap-3 p-3.5 rounded text-xs font-semibold text-red-500 hover:bg-red-500/10 transition-colors cursor-pointer mt-1"
+            className="w-full flex items-center gap-3 p-3 rounded text-xs font-semibold text-red-500 hover:bg-red-500/10 transition-colors cursor-pointer"
           >
             <LogOut className="size-4" />
             <span className="uppercase tracking-wider">LOG OUT</span>
