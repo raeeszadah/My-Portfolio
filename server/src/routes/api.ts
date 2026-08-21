@@ -7,6 +7,8 @@ import { sendAdminNotification, sendClientReply } from '../services/email';
 import fs from 'fs';
 import path from 'path';
 import crypto from 'crypto';
+import { validate } from '../middleware/validation';
+import { schemas } from '../../validation/schemas';
 
 const router = express.Router();
 
@@ -335,7 +337,7 @@ router.get('/auth/status', authenticateJWT, checkAuth);
 
 
 // Update Profile details
-router.put('/admin/profile', authenticateJWT, async (req: Request, res: Response, next: NextFunction) => {
+router.put('/admin/profile', authenticateJWT, validate(schemas.profileUpdateSchema), async (req: Request, res: Response, next: NextFunction) => {
   try {
     const body = req.body;
     const rolesArray = Array.isArray(body.roles)
@@ -390,7 +392,7 @@ router.put('/admin/profile', authenticateJWT, async (req: Request, res: Response
 
 
 // --- Projects CRUD ---
-router.post('/admin/projects', authenticateJWT, async (req: Request, res: Response, next: NextFunction) => {
+router.post('/admin/projects', authenticateJWT, validate(schemas.projectCreateSchema), async (req: Request, res: Response, next: NextFunction) => {
   try {
     const body = req.body;
     const newItem = {
@@ -427,7 +429,7 @@ router.post('/admin/projects', authenticateJWT, async (req: Request, res: Respon
   }
 });
 
-router.put('/admin/projects/:id', authenticateJWT, async (req: Request, res: Response, next: NextFunction) => {
+router.put('/admin/projects/:id', authenticateJWT, validate(schemas.projectUpdateSchema), async (req: Request, res: Response, next: NextFunction) => {
   try {
     const body = req.body;
     const id = req.params.id;
