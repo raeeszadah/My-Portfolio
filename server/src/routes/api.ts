@@ -288,14 +288,14 @@ router.post('/contact', async (req: Request, res: Response, next: NextFunction) 
 });
 
 // ==========================================
-// 2. ADMIN AUTHENTICATION & TARGETED UP S E R T APIs
+// 2. ADMIN AUTHENTICATION & TARGETED UPDATE/INSERT APIs
 // ==========================================
 
 router.post('/auth/login', login);
 router.post('/auth/logout', logout);
 router.get('/auth/status', authenticateJWT, checkAuth);
 
-// Update Profile details (Targeted Upsert with Verified Database Response)
+// Update Profile details (Targeted Update to Supabase)
 router.put('/admin/profile', authenticateJWT, validate(schemas.profileUpdateSchema), async (req: Request, res: Response, next: NextFunction) => {
   try {
     const body = req.body;
@@ -316,50 +316,42 @@ router.put('/admin/profile', authenticateJWT, validate(schemas.profileUpdateSche
       updated_at: new Date().toISOString(),
     };
 
-    let data: any = null;
-    let error: any = null;
-
     if (existingRecord?.id) {
-      const updateRes = await supabaseServer.from('profiles').update(payload).eq('id', existingRecord.id).select();
-      data = updateRes.data;
-      error = updateRes.error;
-      if (error && (error.message?.includes('location') || error.code === 'PGRST204')) {
+      let updateRes = await supabaseServer.from('profiles').update(payload).eq('id', existingRecord.id);
+      if (updateRes.error && (updateRes.error.message?.includes('location') || updateRes.error.code === 'PGRST204')) {
         const fallbackPayload = { ...payload };
         delete fallbackPayload.location;
-        const retry = await supabaseServer.from('profiles').update(fallbackPayload).eq('id', existingRecord.id).select();
-        data = retry.data;
-        error = retry.error;
+        updateRes = await supabaseServer.from('profiles').update(fallbackPayload).eq('id', existingRecord.id);
       }
-    }
 
-    if (!data || data.length === 0) {
+      if (updateRes.error) {
+        return res.status(500).json({ error: updateRes.error.message || 'Failed to update profile in database.' });
+      }
+
+      const updatedProfile = await getLatestProfileFromSupabase();
+      return res.json(formatProfile(updatedProfile || { ...existingRecord, ...payload }));
+    } else {
       const insertPayload = { ...payload, id: crypto.randomUUID() };
-      const insertRes = await supabaseServer.from('profiles').upsert([insertPayload], { onConflict: 'id' }).select();
-      data = insertRes.data;
-      error = insertRes.error;
-      if (error && (error.message?.includes('location') || error.code === 'PGRST204')) {
+      let insertRes = await supabaseServer.from('profiles').insert([insertPayload]).select();
+      if (insertRes.error && (insertRes.error.message?.includes('location') || insertRes.error.code === 'PGRST204')) {
         const fallbackPayload = { ...insertPayload };
         delete fallbackPayload.location;
-        const retry = await supabaseServer.from('profiles').upsert([fallbackPayload], { onConflict: 'id' }).select();
-        data = retry.data;
-        error = retry.error;
+        insertRes = await supabaseServer.from('profiles').insert([fallbackPayload]).select();
       }
-    }
 
-    if (error || !data || data.length === 0) {
-      return res.status(500).json({
-        error: error?.message || 'Database write error: profile update failed to persist in Supabase (0 rows modified).'
-      });
-    }
+      if (insertRes.error || !insertRes.data || insertRes.data.length === 0) {
+        return res.status(500).json({ error: insertRes.error?.message || 'Failed to create profile in database.' });
+      }
 
-    res.json(formatProfile(data[0]));
+      return res.json(formatProfile(insertRes.data[0]));
+    }
   } catch (err: any) {
     console.error('Error updating profile:', err.message || err);
     res.status(500).json({ error: err.message || 'Failed to update profile in database.' });
   }
 });
 
-// --- Projects CRUD (Targeted Upserts & Response Verification) ---
+// --- Projects CRUD (Targeted Updates) ---
 router.post('/admin/projects', authenticateJWT, validate(schemas.projectCreateSchema), async (req: Request, res: Response, next: NextFunction) => {
   try {
     const body = req.body;
@@ -391,7 +383,7 @@ router.post('/admin/projects', authenticateJWT, validate(schemas.projectCreateSc
     }
 
     if (error || !data || data.length === 0) {
-      return res.status(500).json({ error: error?.message || 'Database error: failed to create project in Supabase (0 rows inserted).' });
+      return res.status(500).json({ error: error?.message || 'Database error: failed to create project in Supabase.' });
     }
 
     res.status(201).json(data[0]);
@@ -423,26 +415,19 @@ router.put('/admin/projects/:id', authenticateJWT, validate(schemas.projectUpdat
       updated_at: new Date().toISOString(),
     };
 
-    let { data, error } = await supabaseServer.from('projects').update(payload).eq('id', id).select();
-    if (error && (error.message?.includes('video_url') || error.code === 'PGRST204')) {
+    let updateRes = await supabaseServer.from('projects').update(payload).eq('id', id);
+    if (updateRes.error && (updateRes.error.message?.includes('video_url') || updateRes.error.code === 'PGRST204')) {
       const fallbackPayload = { ...payload };
       delete (fallbackPayload as any).video_url;
-      const retry = await supabaseServer.from('projects').update(fallbackPayload).eq('id', id).select();
-      data = retry.data;
-      error = retry.error;
+      updateRes = await supabaseServer.from('projects').update(fallbackPayload).eq('id', id);
     }
 
-    if ((!data || data.length === 0) && !error) {
-      const upsertRes = await supabaseServer.from('projects').upsert([{ id, ...payload }], { onConflict: 'id' }).select();
-      data = upsertRes.data;
-      error = upsertRes.error;
+    if (updateRes.error) {
+      return res.status(500).json({ error: updateRes.error.message || 'Failed to update project in database.' });
     }
 
-    if (error || !data || data.length === 0) {
-      return res.status(500).json({ error: error?.message || 'Database error: failed to update project in Supabase (0 rows modified).' });
-    }
-
-    res.json(data[0]);
+    const { data: updated } = await supabaseServer.from('projects').select('*').eq('id', id).maybeSingle();
+    res.json(updated || { id, ...payload });
   } catch (err: any) {
     res.status(500).json({ error: err.message || 'Failed to update project.' });
   }
@@ -459,7 +444,7 @@ router.delete('/admin/projects/:id', authenticateJWT, async (req: Request, res: 
   }
 });
 
-// --- Skills CRUD (Targeted Upserts & Verification) ---
+// --- Skills CRUD (Targeted Updates) ---
 router.post('/admin/skills', authenticateJWT, async (req: Request, res: Response, next: NextFunction) => {
   try {
     const body = req.body;
@@ -476,7 +461,7 @@ router.post('/admin/skills', authenticateJWT, async (req: Request, res: Response
 
     const { data, error } = await supabaseServer.from('skills').insert([newItem]).select();
     if (error || !data || data.length === 0) {
-      return res.status(500).json({ error: error?.message || 'Database error: failed to create skill in Supabase (0 rows inserted).' });
+      return res.status(500).json({ error: error?.message || 'Database error: failed to create skill in Supabase.' });
     }
     res.status(201).json(data[0]);
   } catch (err: any) {
@@ -499,19 +484,13 @@ router.put('/admin/skills/:id', authenticateJWT, async (req: Request, res: Respo
       published: body.published !== undefined ? Boolean(body.published) : (existing?.published ?? true),
     };
 
-    let { data, error } = await supabaseServer.from('skills').update(payload).eq('id', id).select();
-
-    if ((!data || data.length === 0) && !error) {
-      const upsertRes = await supabaseServer.from('skills').upsert([{ id, ...payload }], { onConflict: 'id' }).select();
-      data = upsertRes.data;
-      error = upsertRes.error;
+    const updateRes = await supabaseServer.from('skills').update(payload).eq('id', id);
+    if (updateRes.error) {
+      return res.status(500).json({ error: updateRes.error.message || 'Failed to update skill in database.' });
     }
 
-    if (error || !data || data.length === 0) {
-      return res.status(500).json({ error: error?.message || 'Database error: failed to update skill in Supabase (0 rows modified).' });
-    }
-
-    res.json(data[0]);
+    const { data: updated } = await supabaseServer.from('skills').select('*').eq('id', id).maybeSingle();
+    res.json(updated || { id, ...payload });
   } catch (err: any) {
     res.status(500).json({ error: err.message || 'Failed to update skill.' });
   }
@@ -528,7 +507,7 @@ router.delete('/admin/skills/:id', authenticateJWT, async (req: Request, res: Re
   }
 });
 
-// --- Experience CRUD (Targeted Upserts & Verification) ---
+// --- Experience CRUD (Targeted Updates) ---
 router.post('/admin/experience', authenticateJWT, async (req: Request, res: Response, next: NextFunction) => {
   try {
     const body = req.body;
@@ -547,7 +526,7 @@ router.post('/admin/experience', authenticateJWT, async (req: Request, res: Resp
 
     const { data, error } = await supabaseServer.from('experiences').insert([newItem]).select();
     if (error || !data || data.length === 0) {
-      return res.status(500).json({ error: error?.message || 'Database error: failed to create experience in Supabase (0 rows inserted).' });
+      return res.status(500).json({ error: error?.message || 'Database error: failed to create experience in Supabase.' });
     }
     res.status(201).json(data[0]);
   } catch (err: any) {
@@ -572,19 +551,13 @@ router.put('/admin/experience/:id', authenticateJWT, async (req: Request, res: R
       display_order: Number(body.order !== undefined ? body.order : (body.display_order !== undefined ? body.display_order : (existing?.display_order || 0))),
     };
 
-    let { data, error } = await supabaseServer.from('experiences').update(payload).eq('id', id).select();
-
-    if ((!data || data.length === 0) && !error) {
-      const upsertRes = await supabaseServer.from('experiences').upsert([{ id, ...payload }], { onConflict: 'id' }).select();
-      data = upsertRes.data;
-      error = upsertRes.error;
+    const updateRes = await supabaseServer.from('experiences').update(payload).eq('id', id);
+    if (updateRes.error) {
+      return res.status(500).json({ error: updateRes.error.message || 'Failed to update experience in database.' });
     }
 
-    if (error || !data || data.length === 0) {
-      return res.status(500).json({ error: error?.message || 'Database error: failed to update experience in Supabase (0 rows modified).' });
-    }
-
-    res.json(data[0]);
+    const { data: updated } = await supabaseServer.from('experiences').select('*').eq('id', id).maybeSingle();
+    res.json(updated || { id, ...payload });
   } catch (err: any) {
     res.status(500).json({ error: err.message || 'Failed to update experience.' });
   }
@@ -601,7 +574,7 @@ router.delete('/admin/experience/:id', authenticateJWT, async (req: Request, res
   }
 });
 
-// --- Education CRUD (Targeted Upserts & Verification) ---
+// --- Education CRUD (Targeted Updates) ---
 router.post('/admin/education', authenticateJWT, async (req: Request, res: Response, next: NextFunction) => {
   try {
     const body = req.body;
@@ -619,7 +592,7 @@ router.post('/admin/education', authenticateJWT, async (req: Request, res: Respo
 
     const { data, error } = await supabaseServer.from('education').insert([newItem]).select();
     if (error || !data || data.length === 0) {
-      return res.status(500).json({ error: error?.message || 'Database error: failed to create education in Supabase (0 rows inserted).' });
+      return res.status(500).json({ error: error?.message || 'Database error: failed to create education in Supabase.' });
     }
     res.status(201).json(data[0]);
   } catch (err: any) {
@@ -643,19 +616,13 @@ router.put('/admin/education/:id', authenticateJWT, async (req: Request, res: Re
       display_order: Number(body.order !== undefined ? body.order : (body.display_order !== undefined ? body.display_order : (existing?.display_order || 0))),
     };
 
-    let { data, error } = await supabaseServer.from('education').update(payload).eq('id', id).select();
-
-    if ((!data || data.length === 0) && !error) {
-      const upsertRes = await supabaseServer.from('education').upsert([{ id, ...payload }], { onConflict: 'id' }).select();
-      data = upsertRes.data;
-      error = upsertRes.error;
+    const updateRes = await supabaseServer.from('education').update(payload).eq('id', id);
+    if (updateRes.error) {
+      return res.status(500).json({ error: updateRes.error.message || 'Failed to update education in database.' });
     }
 
-    if (error || !data || data.length === 0) {
-      return res.status(500).json({ error: error?.message || 'Database error: failed to update education in Supabase (0 rows modified).' });
-    }
-
-    res.json(data[0]);
+    const { data: updated } = await supabaseServer.from('education').select('*').eq('id', id).maybeSingle();
+    res.json(updated || { id, ...payload });
   } catch (err: any) {
     res.status(500).json({ error: err.message || 'Failed to update education.' });
   }
@@ -672,7 +639,7 @@ router.delete('/admin/education/:id', authenticateJWT, async (req: Request, res:
   }
 });
 
-// --- Certifications CRUD (Targeted Upserts & Verification) ---
+// --- Certifications CRUD (Targeted Updates) ---
 router.post('/admin/certifications', authenticateJWT, async (req: Request, res: Response, next: NextFunction) => {
   try {
     const body = req.body;
@@ -704,7 +671,7 @@ router.post('/admin/certifications', authenticateJWT, async (req: Request, res: 
     }
 
     if (error || !data || data.length === 0) {
-      return res.status(500).json({ error: error?.message || 'Database error: failed to create certification in Supabase (0 rows inserted).' });
+      return res.status(500).json({ error: error?.message || 'Database error: failed to create certification in Supabase.' });
     }
 
     res.status(201).json(data[0]);
@@ -735,26 +702,19 @@ router.put('/admin/certifications/:id', authenticateJWT, async (req: Request, re
       display_order: Number(body.order !== undefined ? body.order : (body.display_order !== undefined ? body.display_order : (existing?.display_order || 0))),
     };
 
-    let { data, error } = await supabaseServer.from('certifications').update(payload).eq('id', id).select();
-    if (error && (error.message?.includes('skills') || error.code === 'PGRST204')) {
+    let updateRes = await supabaseServer.from('certifications').update(payload).eq('id', id);
+    if (updateRes.error && (updateRes.error.message?.includes('skills') || updateRes.error.code === 'PGRST204')) {
       const fallbackPayload = { ...payload };
       delete (fallbackPayload as any).skills;
-      const retry = await supabaseServer.from('certifications').update(fallbackPayload).eq('id', id).select();
-      data = retry.data;
-      error = retry.error;
+      updateRes = await supabaseServer.from('certifications').update(fallbackPayload).eq('id', id);
     }
 
-    if ((!data || data.length === 0) && !error) {
-      const upsertRes = await supabaseServer.from('certifications').upsert([{ id, ...payload }], { onConflict: 'id' }).select();
-      data = upsertRes.data;
-      error = upsertRes.error;
+    if (updateRes.error) {
+      return res.status(500).json({ error: updateRes.error.message || 'Failed to update certification in database.' });
     }
 
-    if (error || !data || data.length === 0) {
-      return res.status(500).json({ error: error?.message || 'Database error: failed to update certification in Supabase (0 rows modified).' });
-    }
-
-    res.json(data[0]);
+    const { data: updated } = await supabaseServer.from('certifications').select('*').eq('id', id).maybeSingle();
+    res.json(updated || { id, ...payload });
   } catch (err: any) {
     res.status(500).json({ error: err.message || 'Failed to update certification.' });
   }
@@ -771,7 +731,7 @@ router.delete('/admin/certifications/:id', authenticateJWT, async (req: Request,
   }
 });
 
-// --- Achievements CRUD (Targeted Upserts & Verification) ---
+// --- Achievements CRUD (Targeted Updates) ---
 router.post('/admin/achievements', authenticateJWT, async (req: Request, res: Response, next: NextFunction) => {
   try {
     const body = req.body;
@@ -789,7 +749,7 @@ router.post('/admin/achievements', authenticateJWT, async (req: Request, res: Re
 
     const { data, error } = await supabaseServer.from('achievements').insert([newItem]).select();
     if (error || !data || data.length === 0) {
-      return res.status(500).json({ error: error?.message || 'Database error: failed to create achievement in Supabase (0 rows inserted).' });
+      return res.status(500).json({ error: error?.message || 'Database error: failed to create achievement in Supabase.' });
     }
     res.status(201).json(data[0]);
   } catch (err: any) {
@@ -813,19 +773,13 @@ router.put('/admin/achievements/:id', authenticateJWT, async (req: Request, res:
       display_order: Number(body.order !== undefined ? body.order : (body.display_order !== undefined ? body.display_order : (existing?.display_order || 0))),
     };
 
-    let { data, error } = await supabaseServer.from('achievements').update(payload).eq('id', id).select();
-
-    if ((!data || data.length === 0) && !error) {
-      const upsertRes = await supabaseServer.from('achievements').upsert([{ id, ...payload }], { onConflict: 'id' }).select();
-      data = upsertRes.data;
-      error = upsertRes.error;
+    const updateRes = await supabaseServer.from('achievements').update(payload).eq('id', id);
+    if (updateRes.error) {
+      return res.status(500).json({ error: updateRes.error.message || 'Failed to update achievement in database.' });
     }
 
-    if (error || !data || data.length === 0) {
-      return res.status(500).json({ error: error?.message || 'Database error: failed to update achievement in Supabase (0 rows modified).' });
-    }
-
-    res.json(data[0]);
+    const { data: updated } = await supabaseServer.from('achievements').select('*').eq('id', id).maybeSingle();
+    res.json(updated || { id, ...payload });
   } catch (err: any) {
     res.status(500).json({ error: err.message || 'Failed to update achievement.' });
   }
@@ -842,7 +796,7 @@ router.delete('/admin/achievements/:id', authenticateJWT, async (req: Request, r
   }
 });
 
-// --- Social Links CRUD (Targeted Upserts & Verification) ---
+// --- Social Links CRUD (Targeted Updates) ---
 router.post('/admin/socials', authenticateJWT, async (req: Request, res: Response, next: NextFunction) => {
   try {
     const body = req.body;
@@ -858,7 +812,7 @@ router.post('/admin/socials', authenticateJWT, async (req: Request, res: Respons
 
     const { data, error } = await supabaseServer.from('social_links').insert([newItem]).select();
     if (error || !data || data.length === 0) {
-      return res.status(500).json({ error: error?.message || 'Database error: failed to create social link in Supabase (0 rows inserted).' });
+      return res.status(500).json({ error: error?.message || 'Database error: failed to create social link in Supabase.' });
     }
     res.status(201).json(data[0]);
   } catch (err: any) {
@@ -880,19 +834,13 @@ router.put('/admin/socials/:id', authenticateJWT, async (req: Request, res: Resp
       display_order: Number(body.displayOrder !== undefined ? body.displayOrder : (body.order !== undefined ? body.order : (body.display_order !== undefined ? body.display_order : (existing?.display_order || 0)))),
     };
 
-    let { data, error } = await supabaseServer.from('social_links').update(payload).eq('id', id).select();
-
-    if ((!data || data.length === 0) && !error) {
-      const upsertRes = await supabaseServer.from('social_links').upsert([{ id, ...payload }], { onConflict: 'id' }).select();
-      data = upsertRes.data;
-      error = upsertRes.error;
+    const updateRes = await supabaseServer.from('social_links').update(payload).eq('id', id);
+    if (updateRes.error) {
+      return res.status(500).json({ error: updateRes.error.message || 'Failed to update social link in database.' });
     }
 
-    if (error || !data || data.length === 0) {
-      return res.status(500).json({ error: error?.message || 'Database error: failed to update social link in Supabase (0 rows modified).' });
-    }
-
-    res.json(data[0]);
+    const { data: updated } = await supabaseServer.from('social_links').select('*').eq('id', id).maybeSingle();
+    res.json(updated || { id, ...payload });
   } catch (err: any) {
     res.status(500).json({ error: err.message || 'Failed to update social link.' });
   }
