@@ -3,8 +3,8 @@ import cors from 'cors';
 import helmet from 'helmet';
 import dotenv from 'dotenv';
 import rateLimit from 'express-rate-limit';
-import { validate } from '../middleware/validation';
-import * as schemas from '../validation/schemas';
+import { validate } from './middleware/validation';
+import { schemas } from './validation/schemas';
 import path from 'path';
 
 // Import API routes
