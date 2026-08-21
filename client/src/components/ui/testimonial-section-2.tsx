@@ -16,7 +16,7 @@ const testimonials: Testimonial[] = [
     name: "Sarah Chen",
     role: "CEO of DataFlow",
     image:
-      "https://res.cloudinary.com/harshitproject/image/upload/v1746774430/member-five.png",
+      "/profile.png",
     quote:
       "SolaceUI transformed our design workflow. What used to take weeks now takes days.",
   },
@@ -25,7 +25,7 @@ const testimonials: Testimonial[] = [
     name: "Marcus Rodriguez",
     role: "Product Lead",
     image:
-      "https://res.cloudinary.com/harshitproject/image/upload/v1746774430/member-one.png",
+      "/profile.png",
     quote:
       "The best investment we've made for our frontend architecture in years.",
   },
@@ -34,7 +34,7 @@ const testimonials: Testimonial[] = [
     name: "Olivia Koe",
     role: "Design Director",
     image:
-      "https://res.cloudinary.com/harshitproject/image/upload/v1774017708/member-six.png",
+      "/profile.png",
     quote:
       "Simply beautiful components that are easy to customize and integrate.",
   },
@@ -43,7 +43,7 @@ const testimonials: Testimonial[] = [
     name: "David Kim",
     role: "Founder",
     image:
-      "https://res.cloudinary.com/harshitproject/image/upload/v1746774430/member-two.png",
+      "/profile.png",
     quote: "Our development velocity has doubled since adopting SolaceUI.",
   },
   {
@@ -51,7 +51,7 @@ const testimonials: Testimonial[] = [
     name: "Amara Okonkwo",
     role: "CTO",
     image:
-      "https://res.cloudinary.com/harshitproject/image/upload/v1746774430/member-three.png",
+      "/profile.png",
     quote:
       "Accessibility and performance out of the box. Truly impressive work.",
   },
@@ -60,7 +60,7 @@ const testimonials: Testimonial[] = [
     name: "James Mitchell",
     role: "Frontend Dev",
     image:
-      "https://res.cloudinary.com/harshitproject/image/upload/v1746774430/member-four.png",
+      "/profile.png",
     quote: "The documentation is clear and the components just work. Love it.",
   },
   {
@@ -68,7 +68,7 @@ const testimonials: Testimonial[] = [
     name: "Elena Rodriguez",
     role: "Product Manager",
     image:
-      "https://res.cloudinary.com/harshitproject/image/upload/v1746774430/member-five.png",
+      "/profile.png",
     quote:
       "It looks premium and feels premium. Our users noticed the difference immediately.",
   },
@@ -77,7 +77,7 @@ const testimonials: Testimonial[] = [
     name: "Michael Chang",
     role: "Tech Lead",
     image:
-      "https://res.cloudinary.com/harshitproject/image/upload/v1746774430/member-one.png",
+      "/profile.png",
     quote:
       "Clean abstractions and great TypeScript support. A joy to work with.",
   },
@@ -86,7 +86,7 @@ const testimonials: Testimonial[] = [
     name: "Sofia Weber",
     role: "Designer",
     image:
-      "https://res.cloudinary.com/harshitproject/image/upload/v1774017708/member-six.png",
+      "/profile.png",
     quote:
       "Finally a library that respects design constraints while offering flexibility.",
   },
