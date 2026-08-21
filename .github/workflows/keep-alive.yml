@@ -1,0 +1,35 @@
+name: Keep Alive
+
+# Trigger the workflow on a schedule (every 5 minutes) and manually.
+on:
+  schedule:
+    - cron: '*/5 * * * *'   # every 5 minutes
+  workflow_dispatch:
+
+jobs:
+  keep-alive:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      # ----------------------------------------------------------------------
+      # Render Keep-Alive
+      # ----------------------------------------------------------------------
+      - name: Ping Render server
+        if: env.RENDER_URL != ''
+        env:
+          RENDER_URL: ${{ secrets.RENDER_SERVER_URL }}
+        run: |
+          curl -s -o /dev/null -w "%{http_code}" "$RENDER_URL" || true
+
+      # ----------------------------------------------------------------------
+      # Supabase Keep-Alive
+      # ----------------------------------------------------------------------
+      - name: Ping Supabase REST endpoint
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+        run: |
+          curl -s -o /dev/null -w "%{http_code}" \
+            -H "apikey: $SUPABASE_ANON_KEY" \
+            -H "Authorization: Bearer $SUPABASE_ANON_KEY" \
+            "${SUPABASE_URL}/rest/v1/" || true
