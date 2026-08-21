@@ -172,14 +172,14 @@ export default function ContentPanels({ refreshStats }: ContentPanelsProps) {
         body: formData,
       });
       const json = await res.json();
-      if (res.ok) {
+      if (res.ok && json.fileUrl) {
         if (editingItem) {
           setEditingItem({
             ...editingItem,
             [field]: json.fileUrl,
             ...(field === 'videoUrl' ? { video_url: json.fileUrl } : {}),
           });
-          setAlert({ type: 'success', msg: `${field === 'videoUrl' ? 'Video demo' : 'File'} uploaded successfully!` });
+          setAlert({ type: 'success', msg: `${field === 'videoUrl' ? 'Video demo' : 'File'} uploaded to Supabase Storage!` });
         } else {
           const updatedProfile = { ...profile, [field]: json.fileUrl };
           setProfile(updatedProfile);
@@ -195,12 +195,19 @@ export default function ContentPanels({ refreshStats }: ContentPanelsProps) {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ ...updatedProfile, roles: rolesArray }),
           });
+          const saveJson = await saveRes.json();
 
-          if (saveRes.ok) {
-            setAlert({ type: 'success', msg: `${field === 'resumeUrl' ? 'Resume PDF' : 'Profile picture'} uploaded and saved successfully!` });
+          if (saveRes.ok && saveJson && !saveJson.error) {
+            setProfile({
+              ...saveJson,
+              roles: Array.isArray(saveJson.roles) ? saveJson.roles.join(', ') : (saveJson.roles || ''),
+              profileImage: saveJson.profileImage || saveJson.profile_image || '',
+              resumeUrl: saveJson.resumeUrl || saveJson.resume_url || '',
+            });
+            setAlert({ type: 'success', msg: `${field === 'resumeUrl' ? 'Resume PDF' : 'Profile picture'} uploaded and saved successfully in Supabase!` });
             refreshStats();
           } else {
-            setAlert({ type: 'error', msg: 'File uploaded, but failed to save profile.' });
+            setAlert({ type: 'error', msg: saveJson?.error || 'File uploaded, but failed to save profile in database.' });
           }
         }
       } else {
@@ -212,8 +219,6 @@ export default function ContentPanels({ refreshStats }: ContentPanelsProps) {
       setUploading(false);
     }
   };
-
-
 
   // Submit profile edits
   const handleProfileSubmit = async (e: React.FormEvent) => {
@@ -233,11 +238,17 @@ export default function ContentPanels({ refreshStats }: ContentPanelsProps) {
         body: JSON.stringify({ ...profile, roles: rolesArray }),
       });
       const json = await res.json();
-      if (res.ok) {
-        setAlert({ type: 'success', msg: 'Profile updated successfully!' });
+      if (res.ok && json && !json.error) {
+        setProfile({
+          ...json,
+          roles: Array.isArray(json.roles) ? json.roles.join(', ') : (json.roles || ''),
+          profileImage: json.profileImage || json.profile_image || '',
+          resumeUrl: json.resumeUrl || json.resume_url || '',
+        });
+        setAlert({ type: 'success', msg: 'Profile updated & persisted successfully in Supabase!' });
         refreshStats();
       } else {
-        setAlert({ type: 'error', msg: json.error || 'Failed to update profile.' });
+        setAlert({ type: 'error', msg: json?.error || 'Failed to update profile in database.' });
       }
     } catch (err) {
       setAlert({ type: 'error', msg: 'Error submitting profile details.' });
@@ -283,16 +294,16 @@ export default function ContentPanels({ refreshStats }: ContentPanelsProps) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(submission),
       });
+      const json = await res.json();
 
-      if (res.ok) {
-        setAlert({ type: 'success', msg: 'Item saved successfully!' });
+      if (res.ok && json && !json.error) {
+        setAlert({ type: 'success', msg: 'Item saved & persisted successfully in Supabase!' });
         setEditingItem(null);
         setIsAdding(false);
-        fetchData();
+        await fetchData();
         refreshStats();
       } else {
-        const json = await res.json();
-        setAlert({ type: 'error', msg: json.error || 'Failed to save item.' });
+        setAlert({ type: 'error', msg: json?.error || 'Failed to save item in database.' });
       }
     } catch (err) {
       setAlert({ type: 'error', msg: 'Network error saving item.' });
@@ -315,12 +326,13 @@ export default function ContentPanels({ refreshStats }: ContentPanelsProps) {
       const res = await apiFetch(`admin/${endpoint}/${id}`, {
         method: 'DELETE',
       });
-      if (res.ok) {
+      const json = await res.json();
+      if (res.ok && json && !json.error) {
         setAlert({ type: 'success', msg: 'Item deleted.' });
-        fetchData();
+        await fetchData();
         refreshStats();
       } else {
-        setAlert({ type: 'error', msg: 'Delete failed.' });
+        setAlert({ type: 'error', msg: json?.error || 'Delete failed in database.' });
       }
     } catch (err) {
       setAlert({ type: 'error', msg: 'Error deleting item.' });
